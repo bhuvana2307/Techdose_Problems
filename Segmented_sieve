@@ -1,0 +1,140 @@
+//C++
+int count_primes(int n) {
+    const int S = 10000;
+
+    vector<int> primes;
+    int nsqrt = sqrt(n);
+    vector<char> is_prime(nsqrt + 2, true);
+    for (int i = 2; i <= nsqrt; i++) {
+        if (is_prime[i]) {
+            primes.push_back(i);
+            for (int j = i * i; j <= nsqrt; j += i)
+                is_prime[j] = false;
+        }
+    }
+
+    int result = 0;
+    vector<char> block(S);
+    for (int k = 0; k * S <= n; k++) {
+        fill(block.begin(), block.end(), true);
+        int start = k * S;
+        for (int p : primes) {
+            int start_idx = (start + p - 1) / p;
+            int j = max(start_idx, p) * p - start;
+            for (; j < S; j += p)
+                block[j] = false;
+        }
+        if (k == 0)
+            block[0] = block[1] = false;
+        for (int i = 0; i < S && start + i <= n; i++) {
+            if (block[i])
+                result++;
+        }
+    }
+    return result;
+}
+
+//Java
+import java.util.ArrayList;
+import java.util.Arrays;
+
+public class CountPrimes {
+    public static int countPrimes(int n) {
+        final int S = 10000;
+        
+        ArrayList<Integer> primes = new ArrayList<>();
+        int nsqrt = (int) Math.sqrt(n);
+        boolean[] isPrime = new boolean[nsqrt + 2];
+        Arrays.fill(isPrime, true);
+        
+        for (int i = 2; i <= nsqrt; i++) {
+            if (isPrime[i]) {
+                primes.add(i);
+                for (int j = i * i; j <= nsqrt; j += i) {
+                    isPrime[j] = false;
+                }
+            }
+        }
+
+        int result = 0;
+        boolean[] block = new boolean[S];
+        
+        for (int k = 0; k * S <= n; k++) {
+            Arrays.fill(block, true);
+            int start = k * S;
+
+            for (int p : primes) {
+                int startIdx = (start + p - 1) / p;
+                int j = Math.max(startIdx, p) * p - start;
+                
+                for (; j < S; j += p) {
+                    block[j] = false;
+                }
+            }
+
+            if (k == 0) {
+                block[0] = false;
+                block[1] = false;
+            }
+
+            for (int i = 0; i < S && start + i <= n; i++) {
+                if (block[i]) {
+                    result++;
+                }
+            }
+        }
+        
+        return result;
+    }
+
+    public static void main(String[] args) {
+        int n = 1000000;
+        System.out.println("Number of primes up to " + n + ": " + countPrimes(n));
+    }
+}
+
+#python
+import math
+
+def count_primes(n):
+    S = 10000
+
+    primes = []
+    nsqrt = int(math.sqrt(n))
+    is_prime = [True] * (nsqrt + 2)
+    
+    for i in range(2, nsqrt + 1):
+        if is_prime[i]:
+            primes.append(i)
+            for j in range(i * i, nsqrt + 1, i):
+                is_prime[j] = False
+
+    result = 0
+    block = [True] * S
+
+    for k in range(0, n + 1, S):
+        block = [True] * S
+        start = k
+
+        for p in primes:
+            start_idx = (start + p - 1) // p
+            j = max(start_idx, p) * p - start
+            
+            while j < S:
+                block[j] = False
+                j += p
+
+        if k == 0:
+            block[0] = block[1] = False
+
+        for i in range(S):
+            if start + i > n:
+                break
+            if block[i]:
+                result += 1
+
+    return result
+
+# Example usage
+n = 1000000
+print(f"Number of primes up to {n}: {count_primes(n)}")
