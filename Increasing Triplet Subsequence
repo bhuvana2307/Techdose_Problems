@@ -1,0 +1,198 @@
+//C++
+//Followup with K increasing subsequence
+class Solution {
+public:
+    bool increasingTriplet(vector<int>& nums) {
+        int n=nums.size();
+        int k=3;
+        vector<long long> increasing(k,LONG_MAX);
+
+        //Find an increasing subsequence of length k
+        for(int i=0;i<n;++i){
+            for(int j=0;j<k;++j){
+                if(increasing[j]>=nums[i]){
+                    increasing[j]=nums[i];
+                    break;
+                }
+            }
+            if(increasing[k-1]!=LONG_MAX)
+                return true;//Found increasing subsequence of length K
+        }
+        return false;
+    }
+};
+
+
+class Solution {
+public:
+    bool increasingTriplet(vector<int>& nums) {
+        int n=nums.size();
+        int first=INT_MAX;
+        int second=INT_MAX;
+
+        //Find an increasing subsequence of length 3
+        for(int i=0;i<n;++i){
+            if(first>=nums[i])
+                first = nums[i];
+            else if(second>=nums[i])
+                second = nums[i];
+            else
+                return true;//Length-3 increasing subsequence found
+        }
+        return false;
+    }
+};
+
+
+//LIS Solution: TC->O(NlogN)
+class Solution {
+public:
+    bool increasingTriplet(vector<int>& nums) {
+        int n=nums.size();
+        vector<int> lis;
+        for(int i=0;i<n;++i){
+            int lb = lower_bound(lis.begin(),lis.end(),nums[i])-lis.begin();
+            if(lb==lis.size())
+                lis.push_back(nums[i]);
+            else
+                lis[lb] = nums[i];
+        }
+        return lis.size()>=3;
+    }
+};
+
+// JAVA
+1st soluthion:
+
+class Solution {
+    public boolean increasingTriplet(int[] nums) {
+        int n = nums.length;
+        int k = 3;
+        long[] increasing = new long[k];
+        Arrays.fill(increasing, Long.MAX_VALUE);
+
+        for (int num : nums) {
+            for (int j = 0; j < k; j++) {
+                if (increasing[j] >= num) {
+                    increasing[j] = num;
+                    break;
+                }
+            }
+            if (increasing[k - 1] != Long.MAX_VALUE) {
+                return true; // Found increasing subsequence of length K
+            }
+        }
+        return false;
+    }
+}
+
+Second Solution (Two Variables):
+
+class Solution {
+    public boolean increasingTriplet(int[] nums) {
+        int n = nums.length;
+        int first = Integer.MAX_VALUE;
+        int second = Integer.MAX_VALUE;
+
+        for (int num : nums) {
+            if (num <= first) {
+                first = num;
+            } else if (num <= second) {
+                second = num;
+            } else {
+                return true; // Length-3 increasing subsequence found
+            }
+        }
+        return false;
+    }
+}
+
+Third Solution (Using LIS - O(N log N)):
+
+import java.util.ArrayList;
+import java.util.List;
+
+class Solution {
+    public boolean increasingTriplet(int[] nums) {
+        int n = nums.length;
+        List<Integer> lis = new ArrayList<>();
+
+        for (int num : nums) {
+            int pos = binarySearch(lis, num);
+            if (pos == lis.size()) {
+                lis.add(num);
+            } else {
+                lis.set(pos, num);
+            }
+        }
+        return lis.size() >= 3;
+    }
+
+    private int binarySearch(List<Integer> lis, int target) {
+        int left = 0, right = lis.size() - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (lis.get(mid) < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return left;
+    }
+}
+
+
+//Python
+
+First Solution (K-Increasing Subsequence)
+
+class Solution:
+    def increasingTriplet(self, nums):
+        n = len(nums)
+        k = 3
+        increasing = [float('inf')] * k
+
+        for num in nums:
+            for j in range(k):
+                if increasing[j] >= num:
+                    increasing[j] = num
+                    break
+            if increasing[k - 1] != float('inf'):
+                return True  # Found increasing subsequence of length K
+        return False
+
+Second Solution (Two Variables)
+
+class Solution:
+    def increasingTriplet(self, nums):
+        first = float('inf')
+        second = float('inf')
+
+        for num in nums:
+            if num <= first:
+                first = num
+            elif num <= second:
+                second = num
+            else:
+                return True  # Length-3 increasing subsequence found
+        return False
+
+Third Solution (Using LIS - O(N log N))
+
+import bisect
+
+class Solution:
+    def increasingTriplet(self, nums):
+        lis = []
+
+        for num in nums:
+            pos = bisect.bisect_left(lis, num)
+            if pos == len(lis):
+                lis.append(num)
+            else:
+                lis[pos] = num
+
+        return len(lis) >= 3
+
+
