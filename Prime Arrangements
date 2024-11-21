@@ -1,0 +1,84 @@
+//C++
+class Solution {
+    long long permutation(int count,int MOD){
+        long long ans = 1;
+        for(int i=2;i<=count;++i)
+            ans = (ans*i)%MOD;
+        return ans;
+    }
+public:
+    int numPrimeArrangements(int n) {
+        int MOD = 1e9+7;
+        int count = 0;
+        for(int i=2;i<=n;++i){
+            bool isPrime = true;
+            for(int j=2;j<=sqrt(i);++j){
+                if(i%j==0){
+                    isPrime = false;
+                    break;
+                }
+            }
+            if(isPrime==true)
+                count++;
+        }
+        return (permutation(count,MOD)*permutation(n-count,MOD))%MOD;
+    }
+};
+
+//JAVA
+class Solution {
+    private long permutation(int count, int MOD) {
+        long ans = 1;
+        for (int i = 2; i <= count; i++) {
+            ans = (ans * i) % MOD;
+        }
+        return ans;
+    }
+
+    public int numPrimeArrangements(int n) {
+        int MOD = (int) 1e9 + 7;
+        int count = 0;
+
+        // Count primes up to n
+        for (int i = 2; i <= n; i++) {
+            boolean isPrime = true;
+            for (int j = 2; j <= Math.sqrt(i); j++) {
+                if (i % j == 0) {
+                    isPrime = false;
+                    break;
+                }
+            }
+            if (isPrime) {
+                count++;
+            }
+        }
+
+        // Calculate the arrangements
+        long result = (permutation(count, MOD) * permutation(n - count, MOD)) % MOD;
+        return (int) result;
+    }
+}
+//Python
+class Solution:
+    def permutation(self, count: int, MOD: int) -> int:
+        ans = 1
+        for i in range(2, count + 1):
+            ans = (ans * i) % MOD
+        return ans
+
+    def numPrimeArrangements(self, n: int) -> int:
+        MOD = int(1e9 + 7)
+        count = 0
+
+        # Count primes up to n
+        for i in range(2, n + 1):
+            is_prime = True
+            for j in range(2, int(i**0.5) + 1):
+                if i % j == 0:
+                    is_prime = False
+                    break
+            if is_prime:
+                count += 1
+
+        # Calculate the arrangements
+        return (self.permutation(count, MOD) * self.permutation(n - count, MOD)) % MOD
