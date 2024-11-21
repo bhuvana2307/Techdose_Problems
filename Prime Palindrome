@@ -1,0 +1,112 @@
+//C++
+class Solution {
+    bool isPalindrome(int no){
+        string s = to_string(no);
+        int left=0,right=s.size()-1;
+        while(left<right){
+            if(s[left]!=s[right])
+                return false;
+            left++;
+            right--;
+        }
+        return true;
+    }
+    bool findPrime(int no){
+        bool isPrime = true;
+        for(int i=2;i*i<=no;++i)
+            if(no%i==0){
+                isPrime = false;
+                break;
+            }
+        return isPrime;
+    }
+public:
+    int primePalindrome(int n) {
+        int no = n==1?2:n;
+        while(1){
+            if((no>1e3 and no<1e4) or
+               (no>1e5 and no<1e6) or
+               (no>1e7 and no<1e8)){
+                no = pow(10,ceil(log10(no)));;
+                continue;
+               }
+            if(findPrime(no) and isPalindrome(no))
+                return no;
+            no++;
+        }
+        return -1;
+    }
+};
+//JAVA
+class Solution {
+    private boolean isPalindrome(int no) {
+        String s = Integer.toString(no);
+        int left = 0, right = s.length() - 1;
+        while (left < right) {
+            if (s.charAt(left) != s.charAt(right)) {
+                return false;
+            }
+            left++;
+            right--;
+        }
+        return true;
+    }
+
+    private boolean findPrime(int no) {
+        if (no < 2) return false;
+        for (int i = 2; i * i <= no; i++) {
+            if (no % i == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public int primePalindrome(int n) {
+        int no = (n == 1) ? 2 : n;
+        while (true) {
+            if ((no > 1e3 && no < 1e4) || 
+                (no > 1e5 && no < 1e6) || 
+                (no > 1e7 && no < 1e8)) {
+                no = (int) Math.pow(10, Math.ceil(Math.log10(no)));
+                continue;
+            }
+            if (findPrime(no) && isPalindrome(no)) {
+                return no;
+            }
+            no++;
+        }
+    }
+}
+
+//Python
+class Solution:
+    def isPalindrome(self, no: int) -> bool:
+        s = str(no)
+        left, right = 0, len(s) - 1
+        while left < right:
+            if s[left] != s[right]:
+                return False
+            left += 1
+            right -= 1
+        return True
+
+    def findPrime(self, no: int) -> bool:
+        if no < 2:
+            return False
+        for i in range(2, int(no**0.5) + 1):
+            if no % i == 0:
+                return False
+        return True
+
+    def primePalindrome(self, n: int) -> int:
+        no = 2 if n == 1 else n
+        while True:
+            if (1e3 < no < 1e4 or
+                1e5 < no < 1e6 or
+                1e7 < no < 1e8):
+                no = 10 ** int(len(str(no)))
+                continue
+            if self.findPrime(no) and self.isPalindrome(no):
+                return no
+            no += 1
