@@ -1,0 +1,146 @@
+//C++
+class Solution {
+    void calculate_longestPrefixSuffix(string &needle,int m,vector<int>& lps){
+        int l=0,r=1;
+        while(r<m){
+            //If R-th char matches with L-th char
+            if(needle[l]==needle[r]){
+                lps[r] = 1+l;
+                l++;
+                r++;
+            } else {
+                if(l>0)
+                    l = lps[l-1];
+                else
+                    r++;
+            }
+        }
+    }
+    int patternMatcher(string& haystack,int n,string& needle,int m,vector<int>& lps){
+        int haystack_pos=0;
+        int needle_pos=0;
+        while(needle_pos<m and haystack_pos<n){
+            //If current char in pattern & text both match
+            if(haystack[haystack_pos]==needle[needle_pos]){
+                haystack_pos++;
+                needle_pos++;
+            }
+            //Check if the pattern has been found
+            if(needle_pos==m)
+                return haystack_pos-m;//return starting pos of pattern
+            
+            if(haystack[haystack_pos]!=needle[needle_pos]){
+                if(needle_pos>0)
+                    needle_pos = lps[needle_pos-1];
+                else
+                    haystack_pos++;
+            }
+        }
+        return -1;
+    }
+public:
+    int strStr(string haystack, string needle) {
+        int n = haystack.size();
+        int m = needle.size();
+        if(m>n)
+            return -1;
+        
+        vector<int> lps(m,0);    //longest prefix suffix
+        calculate_longestPrefixSuffix(needle,m,lps);
+        return patternMatcher(haystack,n,needle,m,lps);
+    }
+};
+//JAVA
+class Solution {
+    private void calculateLongestPrefixSuffix(String needle, int m, int[] lps) {
+        int l = 0, r = 1;
+        while (r < m) {
+            if (needle.charAt(l) == needle.charAt(r)) {
+                lps[r] = l + 1;
+                l++;
+                r++;
+            } else {
+                if (l > 0) {
+                    l = lps[l - 1];
+                } else {
+                    r++;
+                }
+            }
+        }
+    }
+
+    private int patternMatcher(String haystack, int n, String needle, int m, int[] lps) {
+        int haystackPos = 0;
+        int needlePos = 0;
+
+        while (needlePos < m && haystackPos < n) {
+            if (haystack.charAt(haystackPos) == needle.charAt(needlePos)) {
+                haystackPos++;
+                needlePos++;
+            }
+            if (needlePos == m) {
+                return haystackPos - m; // Pattern found, return starting position
+            }
+            if (haystackPos < n && haystack.charAt(haystackPos) != needle.charAt(needlePos)) {
+                if (needlePos > 0) {
+                    needlePos = lps[needlePos - 1];
+                } else {
+                    haystackPos++;
+                }
+            }
+        }
+        return -1; // Pattern not found
+    }
+
+    public int strStr(String haystack, String needle) {
+        int n = haystack.length();
+        int m = needle.length();
+        if (m > n) return -1;
+
+        int[] lps = new int[m]; // Longest Prefix Suffix array
+        calculateLongestPrefixSuffix(needle, m, lps);
+        return patternMatcher(haystack, n, needle, m, lps);
+    }
+}
+//Python
+class Solution:
+    def calculate_longest_prefix_suffix(self, needle: str, m: int) -> list:
+        lps = [0] * m
+        l, r = 0, 1
+        while r < m:
+            if needle[l] == needle[r]:
+                lps[r] = l + 1
+                l += 1
+                r += 1
+            else:
+                if l > 0:
+                    l = lps[l - 1]
+                else:
+                    r += 1
+        return lps
+
+    def pattern_matcher(self, haystack: str, n: int, needle: str, m: int, lps: list) -> int:
+        haystack_pos = 0
+        needle_pos = 0
+
+        while needle_pos < m and haystack_pos < n:
+            if haystack[haystack_pos] == needle[needle_pos]:
+                haystack_pos += 1
+                needle_pos += 1
+            if needle_pos == m:
+                return haystack_pos - m  # Pattern found, return starting position
+            if haystack_pos < n and haystack[haystack_pos] != needle[needle_pos]:
+                if needle_pos > 0:
+                    needle_pos = lps[needle_pos - 1]
+                else:
+                    haystack_pos += 1
+        return -1  # Pattern not found
+
+    def strStr(self, haystack: str, needle: str) -> int:
+        n = len(haystack)
+        m = len(needle)
+        if m > n:
+            return -1
+
+        lps = self.calculate_longest_prefix_suffix(needle, m)
+        return self.pattern_matcher(haystack, n, needle, m, lps)
