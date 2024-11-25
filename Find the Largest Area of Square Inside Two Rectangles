@@ -1,0 +1,144 @@
+//C++
+class Solution {
+    #define ll long long
+public:
+    long long largestSquareArea(vector<vector<int>>& bottomLeft, vector<vector<int>>& topRight) {
+        int n = bottomLeft.size();
+        vector<vector<int>> rectangles(n,vector<int>(4));
+        for(int i=0;i<n;i++){
+            rectangles[i][0] = bottomLeft[i][0];
+            rectangles[i][1] = bottomLeft[i][1];
+            rectangles[i][2] = topRight[i][0];
+            rectangles[i][3] = topRight[i][1];
+        }
+        sort(rectangles.begin(),rectangles.end());
+        ll maxArea = 0;
+        
+        //Find intersection square area with all possible pairs
+        int xi1,xi2,yi1,yi2;    //i-th Rectangle
+        int xj1,xj2,yj1,yj2;    //j-th Rectangle
+        int blx,bly;//bottom-left x,y
+        int trx,try_;//top-right x,y
+        ll sq_side;//side of max-square enclosed
+        for(int i=0;i<n-1;++i){
+            for(int j=i+1;j<n;++j){
+                //Find all lines
+                xi1 = rectangles[i][0];
+                xi2 = rectangles[i][2];
+                yi1 = rectangles[i][1];
+                yi2 = rectangles[i][3];
+                
+                xj1 = rectangles[j][0];
+                xj2 = rectangles[j][2];
+                yj1 = rectangles[j][1];
+                yj2 = rectangles[j][3];
+                
+                //Find if the current pair intersect
+                if(yj1>=yi1 and yj1<=yi2){  //Case-A
+                    if(xj1>=xi1 and xj1<=xi2){
+                        blx = xj1;
+                        bly = yj1;
+                        trx = min(xj2,xi2);
+                        try_ = min(yi2,yj2);
+                        sq_side = min(trx-blx,try_-bly);
+                        maxArea = max(maxArea,sq_side*sq_side);
+                    }
+                } else if(yj2>=yi1 and yj2<=yi2){   //Case-B
+                    if(xj1>=xi1 and xj1<=xi2){
+                        blx = xj1;
+                        bly = yi1;
+                        trx = min(xi2,xj2);
+                        try_ = yj2;
+                        sq_side = min(trx-blx,try_-bly);
+                        maxArea = max(maxArea,sq_side*sq_side);
+                    }
+                } else if(xj1>=xi1 and xj1<=xi2){   //Case-C
+                    if(yj1<yi1 and yj2>yi2){
+                        blx = xj1;
+                        bly = yi1;
+                        trx = min(xj2,xi2);
+                        try_ = yi2;
+                        sq_side = min(trx-blx,try_-bly);
+                        maxArea = max(maxArea,sq_side*sq_side);
+                    }
+                }
+            }
+        }
+        return maxArea;
+    }
+};
+
+//Java
+import java.util.*;
+
+class Solution {
+    public long largestSquareArea(List<int[]> bottomLeft, List<int[]> topRight) {
+        int n = bottomLeft.size();
+        int[][] rectangles = new int[n][4];
+        
+        for (int i = 0; i < n; i++) {
+            rectangles[i][0] = bottomLeft.get(i)[0]; // x1
+            rectangles[i][1] = bottomLeft.get(i)[1]; // y1
+            rectangles[i][2] = topRight.get(i)[0];  // x2
+            rectangles[i][3] = topRight.get(i)[1];  // y2
+        }
+
+        Arrays.sort(rectangles, (a, b) -> a[0] - b[0]); // Sort by x1
+
+        long maxArea = 0;
+
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = i + 1; j < n; j++) {
+                int xi1 = rectangles[i][0], yi1 = rectangles[i][1], xi2 = rectangles[i][2], yi2 = rectangles[i][3];
+                int xj1 = rectangles[j][0], yj1 = rectangles[j][1], xj2 = rectangles[j][2], yj2 = rectangles[j][3];
+
+                // Find intersection
+                int blx = Math.max(xi1, xj1);
+                int bly = Math.max(yi1, yj1);
+                int trx = Math.min(xi2, xj2);
+                int try_ = Math.min(yi2, yj2);
+
+                if (blx < trx && bly < try_) { // Valid intersection
+                    long side = Math.min(trx - blx, try_ - bly);
+                    maxArea = Math.max(maxArea, side * side);
+                }
+            }
+        }
+        return maxArea;
+    }
+}
+
+//Python
+class Solution:
+    def largestSquareArea(self, bottomLeft: list[list[int]], topRight: list[list[int]]) -> int:
+        n = len(bottomLeft)
+        rectangles = []
+        
+        for i in range(n):
+            rectangles.append([
+                bottomLeft[i][0],  # x1
+                bottomLeft[i][1],  # y1
+                topRight[i][0],    # x2
+                topRight[i][1]     # y2
+            ])
+        
+        rectangles.sort()  # Sort by x1
+        
+        max_area = 0
+
+        for i in range(n - 1):
+            for j in range(i + 1, n):
+                xi1, yi1, xi2, yi2 = rectangles[i]
+                xj1, yj1, xj2, yj2 = rectangles[j]
+
+                # Find intersection
+                blx = max(xi1, xj1)
+                bly = max(yi1, yj1)
+                trx = min(xi2, xj2)
+                try_ = min(yi2, yj2)
+
+                if blx < trx and bly < try_:  # Valid intersection
+                    side = min(trx - blx, try_ - bly)
+                    max_area = max(max_area, side * side)
+        
+        return max_area
