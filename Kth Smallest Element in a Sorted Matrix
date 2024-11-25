@@ -1,0 +1,102 @@
+//C++
+class Solution {
+    int count(vector<vector<int>>& matrix,int val){
+        int c=0,n=matrix.size(),lb;
+        for(int i=0;i<n;++i){
+            lb = upper_bound(matrix[i].begin(),matrix[i].end(),val)-matrix[i].begin();
+            c += lb;
+        }
+        return c;
+    }
+public:
+    int kthSmallest(vector<vector<int>>& matrix, int k) {
+        int n=matrix.size();
+        int low=matrix[0][0],high=matrix[n-1][n-1],mid;
+         while(low < high){
+            mid = low+(high-low)/2;
+            int c = count(matrix,mid);
+            if(c < k)   low=mid+1;
+            else        high=mid;
+        }
+        return low;
+    }
+};
+
+//Java
+import java.util.*;
+
+class Solution {
+    // Helper function to count how many elements are <= val in the matrix
+    private int count(int[][] matrix, int val) {
+        int count = 0, n = matrix.length;
+        for (int i = 0; i < n; i++) {
+            int lb = upperBound(matrix[i], val);
+            count += lb;
+        }
+        return count;
+    }
+
+    // Helper function to find upper bound (first index greater than val)
+    private int upperBound(int[] row, int val) {
+        int low = 0, high = row.length;
+        while (low < high) {
+            int mid = low + (high - low) / 2;
+            if (row[mid] <= val) {
+                low = mid + 1;
+            } else {
+                high = mid;
+            }
+        }
+        return low;
+    }
+
+    public int kthSmallest(int[][] matrix, int k) {
+        int n = matrix.length;
+        int low = matrix[0][0], high = matrix[n - 1][n - 1];
+        while (low < high) {
+            int mid = low + (high - low) / 2;
+            int count = count(matrix, mid);
+            if (count < k) {
+                low = mid + 1;
+            } else {
+                high = mid;
+            }
+        }
+        return low;
+    }
+}
+
+//Python
+class Solution:
+    # Helper function to count how many elements are <= val in the matrix
+    def count(self, matrix, val):
+        count = 0
+        n = len(matrix)
+        for row in matrix:
+            lb = self.upperBound(row, val)
+            count += lb
+        return count
+
+    # Helper function to find upper bound (first index greater than val)
+    def upperBound(self, row, val):
+        low, high = 0, len(row)
+        while low < high:
+            mid = low + (high - low) // 2
+            if row[mid] <= val:
+                low = mid + 1
+            else:
+                high = mid
+        return low
+
+    def kthSmallest(self, matrix, k):
+        n = len(matrix)
+        low, high = matrix[0][0], matrix[n - 1][n - 1]
+        while low < high:
+            mid = low + (high - low) // 2
+            count = self.count(matrix, mid)
+            if count < k:
+                low = mid + 1
+            else:
+                high = mid
+        return low
+
