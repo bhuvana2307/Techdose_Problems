@@ -1,0 +1,92 @@
+//C++
+class Solution {
+public:
+    int bagOfTokensScore(vector<int>& tokens, int power) {
+        int n = tokens.size();
+        sort(tokens.begin(),tokens.end());//sort to make choice-maing obvious
+
+        //2-pointer approach
+        int left=0,right=n-1;
+        int score = 0,ans = 0;
+        while(left<=right){
+            while(left<=right and tokens[left]<=power){//greedily score in increasing order of token value
+                power-=tokens[left];
+                left++;
+                score++;
+            }
+            ans = score;//update new higher score
+            if(left<=right and score>0){//get a score from right
+                power+=tokens[right];
+                right--;
+                score--;
+            } else {//not possible to get any more score
+                break;
+            }
+        }
+        return ans;
+    }
+};
+
+//Java
+import java.util.Arrays;
+
+class Solution {
+    public int bagOfTokensScore(int[] tokens, int power) {
+        Arrays.sort(tokens); // Sort to make choice-making obvious
+
+        int left = 0, right = tokens.length - 1;
+        int score = 0, maxScore = 0;
+
+        while (left <= right) {
+            // Gain score by spending power on the smallest token
+            while (left <= right && tokens[left] <= power) {
+                power -= tokens[left];
+                left++;
+                score++;
+            }
+            // Update the maximum score
+            maxScore = Math.max(maxScore, score);
+
+            // If possible, trade score for power by "selling" the largest token
+            if (left <= right && score > 0) {
+                power += tokens[right];
+                right--;
+                score--;
+            } else {
+                break; // Not possible to get any more score
+            }
+        }
+
+        return maxScore;
+    }
+}
+
+//Python
+from typing import List
+
+class Solution:
+    def bagOfTokensScore(self, tokens: List[int], power: int) -> int:
+        tokens.sort()  # Sort to make choice-making obvious
+
+        left, right = 0, len(tokens) - 1
+        score, max_score = 0, 0
+
+        while left <= right:
+            # Gain score by spending power on the smallest token
+            while left <= right and tokens[left] <= power:
+                power -= tokens[left]
+                left += 1
+                score += 1
+
+            # Update the maximum score
+            max_score = max(max_score, score)
+
+            # If possible, trade score for power by "selling" the largest token
+            if left <= right and score > 0:
+                power += tokens[right]
+                right -= 1
+                score -= 1
+            else:
+                break  # Not possible to get any more score
+
+        return max_score
