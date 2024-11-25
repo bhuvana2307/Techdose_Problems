@@ -1,0 +1,72 @@
+//C++
+class Solution {
+public:
+    string maximumOddBinaryNumber(string s) {
+        int count = 0;
+        int n = s.size();
+        for(int i=0;i<n;++i){
+            if(s[i]=='1'){
+                count++;
+                s[i]='0';   //Reset value to 0
+            }
+        }
+        //Remake the largest odd string
+        s[n-1] = '1';
+        count--;
+        for(int i=0;i<n-1 and count>0;++i){
+            s[i]='1';
+            count--;
+        }
+        return s;
+    }
+};
+
+//Java
+class Solution {
+    public String maximumOddBinaryNumber(String s) {
+        int count = 0;
+        char[] arr = s.toCharArray();
+        int n = arr.length;
+
+        // Count the number of '1's and reset them to '0'
+        for (int i = 0; i < n; ++i) {
+            if (arr[i] == '1') {
+                count++;
+                arr[i] = '0'; // Reset value to '0'
+            }
+        }
+
+        // Remake the largest odd binary number
+        arr[n - 1] = '1'; // Ensure it's odd
+        count--;
+        for (int i = 0; i < n - 1 && count > 0; ++i) {
+            arr[i] = '1';
+            count--;
+        }
+
+        return new String(arr);
+    }
+}
+
+//Python
+class Solution:
+    def maximumOddBinaryNumber(self, s: str) -> str:
+        count = s.count('1')
+        n = len(s)
+        s = list(s)
+
+        # Reset all '1's to '0'
+        for i in range(n):
+            if s[i] == '1':
+                s[i] = '0'
+
+        # Remake the largest odd binary number
+        s[-1] = '1'  # Ensure it's odd
+        count -= 1
+        for i in range(n - 1):
+            if count == 0:
+                break
+            s[i] = '1'
+            count -= 1
+
+        return ''.join(s)
