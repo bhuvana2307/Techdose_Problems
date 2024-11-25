@@ -1,0 +1,104 @@
+//C++
+class Solution {
+public:
+    vector<int> findSubstring(string s, vector<string>& words) {
+        unordered_map<string,int> freq,curr;
+        for(string& word: words)
+            freq[word]++;
+        
+        int len = s.size();
+        int n = words.size();
+        int wordSize = words[0].size();
+        int windowSize = wordSize*n;
+
+        vector<int> ans;
+        for(int startPos=0;startPos<wordSize;++startPos){//Try all starting positions
+            int start = startPos;
+            do {
+                curr = freq;    //Make a copy of freq map to edit
+                string currWord;
+                bool matched = true;    //presume that match happened
+                for(int i=0;i<n;++i){   //Find each word
+                    currWord = s.substr(start+i*wordSize,wordSize); //Extract current word
+                    if(!curr.count(currWord) or curr[currWord]==0){ //Match word
+                        matched = false;    //current word did not match
+                        break;
+                    }
+                    curr[currWord]--;           //Remove word after having found
+                }
+                if(matched==true)               //Found match
+                    ans.push_back(start);
+                start+=wordSize;                //Sliding Window
+            }while(start+windowSize-1<len);     //Bound check
+        }
+        return ans;
+    }
+};
+
+//Java
+import java.util.*;
+
+class Solution {
+    public List<Integer> findSubstring(String s, String[] words) {
+        Map<String, Integer> freq = new HashMap<>();
+        for (String word : words)
+            freq.put(word, freq.getOrDefault(word, 0) + 1);
+
+        int len = s.length();
+        int n = words.length;
+        int wordSize = words[0].length();
+        int windowSize = wordSize * n;
+
+        List<Integer> ans = new ArrayList<>();
+        for (int startPos = 0; startPos < wordSize; ++startPos) { // Try all starting positions
+            int start = startPos;
+            while (start + windowSize - 1 < len) { // Bound check
+                Map<String, Integer> curr = new HashMap<>(freq); // Copy the freq map
+                boolean matched = true;
+                for (int i = 0; i < n; ++i) { // Find each word
+                    String currWord = s.substring(start + i * wordSize, start + (i + 1) * wordSize);
+                    if (!curr.containsKey(currWord) || curr.get(currWord) == 0) {
+                        matched = false; // Word mismatch
+                        break;
+                    }
+                    curr.put(currWord, curr.get(currWord) - 1); // Decrease count
+                }
+                if (matched) // All words matched
+                    ans.add(start);
+
+                start += wordSize; // Sliding window
+            }
+        }
+        return ans;
+    }
+}
+
+//Python
+from collections import Counter
+from typing import List
+
+class Solution:
+    def findSubstring(self, s: str, words: List[str]) -> List[int]:
+        freq = Counter(words)  # Frequency map of words
+        len_s = len(s)
+        n = len(words)
+        word_size = len(words[0])
+        window_size = word_size * n
+
+        ans = []
+        for start_pos in range(word_size):  # Try all starting positions
+            start = start_pos
+            while start + window_size - 1 < len_s:  # Bound check
+                curr = freq.copy()  # Copy the freq map
+                matched = True
+                for i in range(n):  # Find each word
+                    curr_word = s[start + i * word_size:start + (i + 1) * word_size]
+                    if curr_word not in curr or curr[curr_word] == 0:  # Word mismatch
+                        matched = False
+                        break
+                    curr[curr_word] -= 1  # Decrease count
+                if matched:  # All words matched
+                    ans.append(start)
+
+                start += word_size  # Sliding window
+        return ans
