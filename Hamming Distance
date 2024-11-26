@@ -1,0 +1,46 @@
+//C++
+class Solution {
+public:
+    int hammingDistance(int x, int y) {
+        int xorVal = x^y;
+        int countSetBits = 0;
+        while(xorVal){
+            if(xorVal & 1)
+                countSetBits++;
+            xorVal >>= 1;
+        }
+        return countSetBits;
+    }
+};
+
+//JAVA
+class Solution {
+    public int hammingDistance(int x, int y) {
+        int xorVal = x ^ y; // XOR operation
+        int countSetBits = 0;
+
+        // Count the number of set bits in the XOR result
+        while (xorVal != 0) {
+            if ((xorVal & 1) == 1) {
+                countSetBits++;
+            }
+            xorVal >>= 1; // Right shift the XOR value
+        }
+
+        return countSetBits;
+    }
+}
+
+//Python
+class Solution:
+    def hammingDistance(self, x: int, y: int) -> int:
+        xorVal = x ^ y  # XOR operation
+        countSetBits = 0
+
+        # Count the number of set bits in the XOR result
+        while xorVal:
+            if xorVal & 1:
+                countSetBits += 1
+            xorVal >>= 1  # Right shift the XOR value
+
+        return countSetBits
