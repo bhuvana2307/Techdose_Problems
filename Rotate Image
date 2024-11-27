@@ -1,0 +1,90 @@
+//C++
+class Solution {
+private:
+    void transpose(vector<vector<int>>& matrix) {
+        for (int i = 0; i < matrix.size(); ++i) {
+            for (int j = i; j < matrix[0].size(); ++j) {
+                int temp = matrix[i][j];
+                matrix[i][j] = matrix[j][i];
+                matrix[j][i] = temp;
+            }
+        }
+    }
+
+    void reverseRows(vector<vector<int>>& matrix) {
+        for (int r = 0; r < matrix.size(); ++r) {
+            int left = 0;
+            int right = matrix.size() - 1;
+
+            while (left < right) {
+                int temp = matrix[r][left];
+                matrix[r][left] = matrix[r][right];
+                matrix[r][right] = temp;
+
+                ++left;
+                --right;
+            }
+        }
+    }
+
+public:
+    void rotate(vector<vector<int>>& matrix) {
+        transpose(matrix);
+        reverseRows(matrix);
+    }
+};
+
+//JAVA
+class Solution {
+    private void transpose(int[][] matrix) {
+        for(int i=0; i<matrix.length; i++) {
+            for(int j=i; j<matrix[0].length; j++) {
+                int temp = matrix[i][j];
+                matrix[i][j] = matrix[j][i];
+                matrix[j][i] = temp;
+            }
+        }
+    }
+    private void reverseRows(int[][] matrix) {
+        for(int r=0; r<matrix.length; r++) {
+            int left = 0;
+            int right = matrix.length-1;
+
+            while(left < right) {
+                int temp = matrix[r][left];
+                matrix[r][left] = matrix[r][right];
+                matrix[r][right] = temp;
+
+                left++;
+                right--;
+            }
+        }
+
+    }
+    public void rotate(int[][] matrix) {
+        transpose(matrix);
+        reverseRows(matrix);
+    }
+}
+
+//PYTHON
+class Solution:
+    def rotate(self, matrix: List[List[int]]) -> None:
+        """
+        Do not return anything, modify matrix in-place instead.
+        """
+        def transpose(matrix):
+            for i in range(len(matrix)):
+                for j in range(i, len(matrix[0])):
+                    matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
+
+        def reverse_rows(matrix):
+            for r in range(len(matrix)):
+                left, right = 0, len(matrix) - 1
+                while left < right:
+                    matrix[r][left], matrix[r][right] = matrix[r][right], matrix[r][left]
+                    left += 1
+                    right -= 1
+
+        transpose(matrix)
+        reverse_rows(matrix)
