@@ -1,0 +1,141 @@
+//C++
+class Solution {
+    unordered_map<TreeNode*,TreeNode*> parent;
+    void preorder(TreeNode* curr,TreeNode* par){
+        if(!curr)   return;
+        
+        parent[curr] = par;
+        preorder(curr->left,curr);
+        preorder(curr->right,curr);
+    }
+public:
+    vector<int> distanceK(TreeNode* root, TreeNode* target, int k) {
+        preorder(root,NULL);
+        
+        queue<TreeNode*> q;
+        q.push(target);
+        unordered_set<TreeNode*> visited;
+        
+        while(!q.empty() and k){
+            k-=1;
+            int size = q.size();
+            for(int i=0;i<size;++i){
+                TreeNode* curr = q.front();
+                q.pop();
+                visited.insert(curr);
+                
+                if(!visited.count(curr->left) and curr->left)   q.push(curr->left);
+                if(!visited.count(curr->right) and curr->right)  q.push(curr->right);
+                if(!visited.count(parent[curr]) and parent[curr]) q.push(parent[curr]);
+            }
+        }
+        vector<int> ans;
+        while(!q.empty()){
+            TreeNode* curr = q.front();
+            q.pop();
+            ans.push_back(curr->val);
+        }
+        return ans;
+    }
+};
+//JAVA
+import java.util.*;
+
+class Solution {
+    private Map<TreeNode, TreeNode> parent = new HashMap<>();
+
+    // Preorder traversal to fill the parent map
+    private void preorder(TreeNode curr, TreeNode par) {
+        if (curr == null) return;
+        
+        parent.put(curr, par);
+        preorder(curr.left, curr);
+        preorder(curr.right, curr);
+    }
+
+    public List<Integer> distanceK(TreeNode root, TreeNode target, int k) {
+        preorder(root, null);
+
+        Queue<TreeNode> q = new LinkedList<>();
+        q.add(target);
+        Set<TreeNode> visited = new HashSet<>();
+        
+        while (!q.isEmpty() && k > 0) {
+            k--;
+            int size = q.size();
+            for (int i = 0; i < size; i++) {
+                TreeNode curr = q.poll();
+                visited.add(curr);
+
+                // Add the left child if not visited
+                if (curr.left != null && !visited.contains(curr.left)) {
+                    q.add(curr.left);
+                }
+
+                // Add the right child if not visited
+                if (curr.right != null && !visited.contains(curr.right)) {
+                    q.add(curr.right);
+                }
+
+                // Add the parent if not visited
+                if (parent.containsKey(curr) && !visited.contains(parent.get(curr))) {
+                    q.add(parent.get(curr));
+                }
+            }
+        }
+
+        List<Integer> ans = new ArrayList<>();
+        while (!q.isEmpty()) {
+            ans.add(q.poll().val);
+        }
+
+        return ans;
+    }
+}
+
+//PYTHON
+from collections import deque, defaultdict
+
+class Solution:
+    def __init__(self):
+        self.parent = {}
+
+    # Preorder traversal to fill the parent map
+    def preorder(self, curr, par):
+        if not curr:
+            return
+        
+        self.parent[curr] = par
+        self.preorder(curr.left, curr)
+        self.preorder(curr.right, curr)
+
+    def distanceK(self, root, target, k):
+        self.preorder(root, None)
+
+        q = deque([target])
+        visited = set()
+
+        while q and k > 0:
+            k -= 1
+            size = len(q)
+            for _ in range(size):
+                curr = q.popleft()
+                visited.add(curr)
+
+                # Add the left child if not visited
+                if curr.left and curr.left not in visited:
+                    q.append(curr.left)
+
+                # Add the right child if not visited
+                if curr.right and curr.right not in visited:
+                    q.append(curr.right)
+
+                # Add the parent if not visited
+                if curr in self.parent and self.parent[curr] not in visited:
+                    q.append(self.parent[curr])
+
+        ans = []
+        while q:
+            ans.append(q.popleft().val)
+
+        return ans
