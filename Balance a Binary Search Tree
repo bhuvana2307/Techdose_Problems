@@ -1,0 +1,89 @@
+//C++
+class Solution {
+    void inTraverse(TreeNode* root,vector<int>& inorder){
+        if(!root)   return;
+        inTraverse(root->left,inorder);
+        inorder.push_back(root->val);
+        inTraverse(root->right,inorder);
+    }
+    TreeNode *contructBalancedBST(vector<int>& in,int low,int high){
+        if(low>high)    return NULL;
+        
+        int mid = low + (high-low)/2;
+        TreeNode *curr = new TreeNode(in[mid]);
+        curr->left  = contructBalancedBST(in,low,mid-1);
+        curr->right = contructBalancedBST(in,mid+1,high);
+        return curr;
+    }
+public:
+    TreeNode* balanceBST(TreeNode* root) {
+        if(!root)   return NULL;
+        vector<int> inorder;
+        inTraverse(root,inorder);
+        return contructBalancedBST(inorder,0,inorder.size()-1);
+    }
+};
+
+//JAVA
+class Solution {
+    
+    // Inorder traversal to get the sorted list of values
+    private void inTraverse(TreeNode root, List<Integer> inorder) {
+        if (root == null) return;
+        
+        inTraverse(root.left, inorder);
+        inorder.add(root.val);
+        inTraverse(root.right, inorder);
+    }
+
+    // Function to construct a balanced BST from the sorted inorder list
+    private TreeNode constructBalancedBST(List<Integer> in, int low, int high) {
+        if (low > high) return null;
+
+        int mid = low + (high - low) / 2;
+        TreeNode curr = new TreeNode(in.get(mid));
+        curr.left = constructBalancedBST(in, low, mid - 1);
+        curr.right = constructBalancedBST(in, mid + 1, high);
+        return curr;
+    }
+
+    public TreeNode balanceBST(TreeNode root) {
+        if (root == null) return null;
+        
+        List<Integer> inorder = new ArrayList<>();
+        inTraverse(root, inorder);
+        return constructBalancedBST(inorder, 0, inorder.size() - 1);
+    }
+}
+
+//PYTHON
+class Solution:
+
+    # Inorder traversal to get the sorted list of values
+    def inTraverse(self, root, inorder):
+        if not root:
+            return
+        
+        self.inTraverse(root.left, inorder)
+        inorder.append(root.val)
+        self.inTraverse(root.right, inorder)
+
+    # Function to construct a balanced BST from the sorted inorder list
+    def constructBalancedBST(self, in_order, low, high):
+        if low > high:
+            return None
+        
+        mid = low + (high - low) // 2
+        curr = TreeNode(in_order[mid])
+        curr.left = self.constructBalancedBST(in_order, low, mid - 1)
+        curr.right = self.constructBalancedBST(in_order, mid + 1, high)
+        return curr
+
+    def balanceBST(self, root):
+        if not root:
+            return None
+        
+        inorder = []
+        self.inTraverse(root, inorder)
+        return self.constructBalancedBST(inorder, 0, len(inorder) - 1)
+
