@@ -1,0 +1,217 @@
+//C++
+class Solution {
+    #define N 2
+    struct trienode {
+        int number;
+        trienode* child[N];
+        trienode(){
+            for(int i=0;i<N;++i)
+                child[i]=NULL;
+        }
+    };
+    trienode *root;
+    void TrieInsert(const int& no,const string& s){
+        trienode* curr = root;
+        int idx;
+        for(int i=0;s[i]!='\0';++i){
+            idx = s[i]=='0'?0:1;
+            if(!curr->child[idx])
+                curr->child[idx] = new trienode();
+            curr = curr->child[idx];
+        }
+        curr->number=no;
+    }
+    int searchMaxInTrie(string candidate){
+        trienode* curr = root;
+        int idx;
+        for(int i=0;candidate[i]!='\0';++i){
+            idx = candidate[i]=='0'?1:0;
+            if(curr->child[idx]){
+                curr = curr->child[idx];
+            } else {
+                curr = curr->child[!idx];
+            }
+        }
+        return curr->number;
+    }
+    string convert2string(int num,int size){
+        string s;
+        int len=0;
+        while(num){
+            if(num%2==0)
+                s.push_back('0');
+            else
+                s.push_back('1');
+            len+=1;
+            num/=2;
+        }
+        for(;len<size;++len)
+            s.push_back('0');
+        reverse(s.begin(),s.end());
+        return s;
+    }
+    void Int2String(vector<int>& nums,vector<string>& nos){
+        int maxNo = *max_element(nums.begin(),nums.end());
+        int size = maxNo>=1?log2(maxNo)+1:1;
+        for(int num: nums)
+            nos.push_back(convert2string(num,size));
+    }
+public:
+    int findMaximumXOR(vector<int>& nums) {
+        root = new trienode();//Initialize Trie
+
+        vector<string> nos;
+        Int2String(nums,nos);
+        //cout<<"All strings\n";
+        for(int i=0;i<nums.size();++i){
+        //    cout<<nums[i]<<": "<<nos[i]<<"\n";
+            TrieInsert(nums[i],nos[i]);
+        }
+
+        int maxXOR = 0;
+        for(int i=0;i<nums.size();++i)
+            maxXOR = max(maxXOR,nums[i]^searchMaxInTrie(nos[i]));
+        return maxXOR;
+    }
+};
+
+//JAVA
+class Solution {
+    private static final int N = 2;
+    
+    class TrieNode {
+        int number;
+        TrieNode[] child = new TrieNode[N];
+        
+        TrieNode() {
+            for (int i = 0; i < N; ++i) {
+                child[i] = null;
+            }
+        }
+    }
+
+    private TrieNode root;
+
+    private void trieInsert(int no, String s) {
+        TrieNode curr = root;
+        int idx;
+        for (int i = 0; i < s.length(); ++i) {
+            idx = s.charAt(i) == '0' ? 0 : 1;
+            if (curr.child[idx] == null) {
+                curr.child[idx] = new TrieNode();
+            }
+            curr = curr.child[idx];
+        }
+        curr.number = no;
+    }
+
+    private int searchMaxInTrie(String candidate) {
+        TrieNode curr = root;
+        int idx;
+        for (int i = 0; i < candidate.length(); ++i) {
+            idx = candidate.charAt(i) == '0' ? 1 : 0;
+            if (curr.child[idx] != null) {
+                curr = curr.child[idx];
+            } else {
+                curr = curr.child[1 - idx];
+            }
+        }
+        return curr.number;
+    }
+
+    private String convertToString(int num, int size) {
+        StringBuilder s = new StringBuilder();
+        int len = 0;
+        while (num > 0) {
+            s.append(num % 2 == 0 ? '0' : '1');
+            len += 1;
+            num /= 2;
+        }
+        for (; len < size; ++len) {
+            s.append('0');
+        }
+        s.reverse();
+        return s.toString();
+    }
+
+    private void intToString(List<Integer> nums, List<String> nos) {
+        int maxNo = Collections.max(nums);
+        int size = maxNo >= 1 ? (int) (Math.log(maxNo) / Math.log(2)) + 1 : 1;
+        for (int num : nums) {
+            nos.add(convertToString(num, size));
+        }
+    }
+
+    public int findMaximumXOR(List<Integer> nums) {
+        root = new TrieNode(); // Initialize Trie
+
+        List<String> nos = new ArrayList<>();
+        intToString(nums, nos);
+
+        for (int i = 0; i < nums.size(); ++i) {
+            trieInsert(nums.get(i), nos.get(i));
+        }
+
+        int maxXOR = 0;
+        for (int i = 0; i < nums.size(); ++i) {
+            maxXOR = Math.max(maxXOR, nums.get(i) ^ searchMaxInTrie(nos.get(i)));
+        }
+        return maxXOR;
+    }
+}
+
+//Python
+class Solution:
+    N = 2
+    
+    class TrieNode:
+        def __init__(self):
+            self.number = 0
+            self.child = [None] * self.N
+    
+    def __init__(self):
+        self.root = self.TrieNode()
+
+    def trie_insert(self, no, s):
+        curr = self.root
+        for i in range(len(s)):
+            idx = 0 if s[i] == '0' else 1
+            if curr.child[idx] is None:
+                curr.child[idx] = self.TrieNode()
+            curr = curr.child[idx]
+        curr.number = no
+
+    def search_max_in_trie(self, candidate):
+        curr = self.root
+        for i in range(len(candidate)):
+            idx = 1 if candidate[i] == '0' else 0
+            if curr.child[idx] is not None:
+                curr = curr.child[idx]
+            else:
+                curr = curr.child[1 - idx]
+        return curr.number
+
+    def convert_to_string(self, num, size):
+        s = ''
+        while num:
+            s += '0' if num % 2 == 0 else '1'
+            num //= 2
+        s += '0' * (size - len(s))  # Padding with 0s
+        return s[::-1]  # Reverse to get the correct bit order
+
+    def int_to_string(self, nums):
+        max_no = max(nums)
+        size = max_no.bit_length() if max_no > 0 else 1
+        return [self.convert_to_string(num, size) for num in nums]
+
+    def findMaximumXOR(self, nums):
+        nos = self.int_to_string(nums)
+
+        for i in range(len(nums)):
+            self.trie_insert(nums[i], nos[i])
+
+        max_xor = 0
+        for i in range(len(nums)):
+            max_xor = max(max_xor, nums[i] ^ self.search_max_in_trie(nos[i]))
+
+        return max_xor
