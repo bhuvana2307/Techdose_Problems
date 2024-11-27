@@ -1,0 +1,67 @@
+//C++
+class Solution {
+    TreeNode* prev;
+    void preorder(TreeNode* curr){
+        if(!curr)   return;
+        if(prev){
+            prev->left = NULL;
+            prev->right = curr;
+        }
+        
+        TreeNode* r = curr->right;
+        prev = curr;
+        preorder(curr->left);
+        preorder(r);
+    }
+public:
+    void flatten(TreeNode* root) {
+        prev = NULL;
+        preorder(root);
+    }
+};
+
+//JAVA
+class Solution {
+    private TreeNode prev;
+
+    private void preorder(TreeNode curr) {
+        if (curr == null) return;
+        
+        if (prev != null) {
+            prev.left = null;
+            prev.right = curr;
+        }
+
+        TreeNode r = curr.right;
+        prev = curr;
+        preorder(curr.left);
+        preorder(r);
+    }
+
+    public void flatten(TreeNode root) {
+        prev = null;
+        preorder(root);
+    }
+}
+
+//PYTHON
+class Solution:
+    def __init__(self):
+        self.prev = None
+
+    def preorder(self, curr):
+        if not curr:
+            return
+        
+        if self.prev:
+            self.prev.left = None
+            self.prev.right = curr
+        
+        r = curr.right
+        self.prev = curr
+        self.preorder(curr.left)
+        self.preorder(r)
+
+    def flatten(self, root):
+        self.prev = None
+        self.preorder(root)
