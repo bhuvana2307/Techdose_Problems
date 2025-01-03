@@ -1,0 +1,68 @@
+//C++
+void rotate90degree(vector<vector<int>>& a) {
+    int m = a.size();
+    int n = a[0].size();
+
+    // Transpose the matrix
+    for (int i = 0; i < m; i++) {
+        for (int j = i; j < n; j++) {
+            swap(a[i][j], a[j][i]);
+        }
+    }
+
+    // Reverse each row
+    for (int i = 0; i < m; i++) {
+        int l = 0, r = n - 1;
+        while (l < r) {
+            swap(a[i][l], a[i][r]);
+            l++;
+            r--;
+        }
+    }
+}
+
+//Java
+public class RotateMatrix {
+    public static void rotate90degree(int[][] a) {
+        int m = a.length;
+        int n = a[0].length;
+
+        // Transpose the matrix
+        for (int i = 0; i < m; i++) {
+            for (int j = i; j < n; j++) {
+                int temp = a[i][j];
+                a[i][j] = a[j][i];
+                a[j][i] = temp;
+            }
+        }
+
+        // Reverse each row
+        for (int i = 0; i < m; i++) {
+            int l = 0, r = n - 1;
+            while (l < r) {
+                int temp = a[i][l];
+                a[i][l] = a[i][r];
+                a[i][r] = temp;
+                l++;
+                r--;
+            }
+        }
+    }
+
+  #Python
+  def rotate90degree(matrix):
+    m = len(matrix)
+    n = len(matrix[0])
+
+    # Transpose the matrix
+    for i in range(m):
+        for j in range(i, n):
+            matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
+
+    # Reverse each row
+    for i in range(m):
+        l, r = 0, n - 1
+        while l < r:
+            matrix[i][l], matrix[i][r] = matrix[i][r], matrix[i][l]
+            l += 1
+            r -= 1
