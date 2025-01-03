@@ -1,0 +1,123 @@
+//C++
+class Solution { 
+int xorr_1toN(int n) 
+{ 
+  
+    switch (n & 3) { 
+    case 0: 
+        return n; 
+    case 1: 
+        return 1; 
+    case 2: 
+        return n + 1; 
+    case 3: 
+        return 0; 
+    }
+    return 0;
+} 
+public:
+    vector<int> decode(vector<int>& encoded) {
+        int xor_enc = 0;
+        int n = encoded.size()+1;
+        vector<int> ans;
+        
+        for(int i=0;i<encoded.size();i+=2)
+            xor_enc ^= encoded[i];
+        
+        int xorr_full = xorr_1toN(n);
+        
+        int ele = xorr_full ^ xor_enc;
+        ans.push_back(ele);
+        
+        //Rest all elements
+        for(int i=n-2;i>=0;--i)
+        {
+            ele = ele^encoded[i];
+            ans.push_back(ele);
+        }
+        reverse(ans.begin(),ans.end());
+        return ans;
+    }
+};
+
+//Java
+class Solution {
+    // Function to calculate XOR from 1 to n
+    private int xorr_1toN(int n) {
+        switch (n & 3) {
+            case 0: return n;
+            case 1: return 1;
+            case 2: return n + 1;
+            case 3: return 0;
+        }
+        return 0;
+    }
+
+    public List<Integer> decode(int[] encoded) {
+        int xor_enc = 0;
+        int n = encoded.length + 1;
+        List<Integer> ans = new ArrayList<>();
+
+        // XOR of encoded elements at even indices
+        for (int i = 0; i < encoded.length; i += 2) {
+            xor_enc ^= encoded[i];
+        }
+
+        // XOR from 1 to n
+        int xorr_full = xorr_1toN(n);
+
+        // Calculate the first element
+        int ele = xorr_full ^ xor_enc;
+        ans.add(ele);
+
+        // Calculate the rest of the elements
+        for (int i = n - 2; i >= 0; --i) {
+            ele = ele ^ encoded[i];
+            ans.add(ele);
+        }
+
+        // Reverse the list to get the final result
+        Collections.reverse(ans);
+        return ans;
+    }
+}
+
+#Python
+class Solution:
+    # Function to calculate XOR from 1 to n
+    def xorr_1toN(self, n):
+        match n & 3:
+            case 0:
+                return n
+            case 1:
+                return 1
+            case 2:
+                return n + 1
+            case 3:
+                return 0
+        return 0
+
+    def decode(self, encoded):
+        xor_enc = 0
+        n = len(encoded) + 1
+        ans = []
+
+        # XOR of encoded elements at even indices
+        for i in range(0, len(encoded), 2):
+            xor_enc ^= encoded[i]
+
+        # XOR from 1 to n
+        xorr_full = self.xorr_1toN(n)
+
+        # Calculate the first element
+        ele = xorr_full ^ xor_enc
+        ans.append(ele)
+
+        # Calculate the rest of the elements
+        for i in range(n - 2, -1, -1):
+            ele = ele ^ encoded[i]
+            ans.append(ele)
+
+        # Reverse the list to get the final result
+        ans.reverse()
+        return ans
