@@ -1,0 +1,47 @@
+//C++
+class Solution {
+public:
+    double myPow(double x, int y) {
+        int n = abs(y);
+        double ans = 1.0;
+        while(n>=1){
+            if(n&1)
+                ans*=x;
+            n/=2;
+            x*=x;
+        }
+        return y<0? 1/ans : ans;
+    }
+};
+
+//Java
+class Solution {
+    public double myPow(double x, int y) {
+        long n = Math.abs((long)y); // Use long to handle edge cases like Integer.MIN_VALUE
+        double ans = 1.0;
+
+        while (n >= 1) {
+            if ((n & 1) == 1) {
+                ans *= x;
+            }
+            n /= 2;
+            x *= x;
+        }
+
+        return y < 0 ? 1 / ans : ans;
+    }
+}
+
+//Python
+class Solution:
+    def myPow(self, x: float, y: int) -> float:
+        n = abs(y)
+        ans = 1.0
+
+        while n >= 1:
+            if n & 1:
+                ans *= x
+            n //= 2
+            x *= x
+
+        return 1 / ans if y < 0 else ans
