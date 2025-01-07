@@ -1,0 +1,60 @@
+//C++
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        unordered_map<int,int> mymap;//key,Value---->Val,idx
+        
+        //Find the pair element by element
+        for(int i=0;i<nums.size();++i){
+            if(mymap.count(target-nums[i]))
+                return {i,mymap[target-nums[i]]};
+            //Insert current element
+            mymap[nums[i]] = i;
+        }
+        return {};//No pair exists
+    }
+};
+
+//Java
+import java.util.HashMap;
+import java.util.Map;
+
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        Map<Integer, Integer> map = new HashMap<>(); // key: value, value: index
+
+        for (int i = 0; i < nums.length; i++) {
+            int complement = target - nums[i];
+            if (map.containsKey(complement)) {
+                return new int[] {i, map.get(complement)};
+            }
+            // Add current element to the map
+            map.put(nums[i], i);
+        }
+
+        // No pair exists
+        return new int[] {};
+    }
+}
+
+#Python
+import java.util.HashMap;
+import java.util.Map;
+
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        Map<Integer, Integer> map = new HashMap<>(); // key: value, value: index
+
+        for (int i = 0; i < nums.length; i++) {
+            int complement = target - nums[i];
+            if (map.containsKey(complement)) {
+                return new int[] {i, map.get(complement)};
+            }
+            // Add current element to the map
+            map.put(nums[i], i);
+        }
+
+        // No pair exists
+        return new int[] {};
+    }
+}
