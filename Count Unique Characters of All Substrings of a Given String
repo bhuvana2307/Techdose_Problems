@@ -1,0 +1,88 @@
+//C++
+class Solution {
+    #define mod 1000000007
+public:
+    int uniqueLetterString(string s) {
+        int n = s.size();
+        vector<vector<int>> hashmap(26);
+        
+        //Push -1 for all keys in value list
+        for(int i=0;i<26;++i)   hashmap[i].push_back(-1);
+        
+        //Store all indices
+        for(int i=0;i<n;++i)    hashmap[s[i]-'A'].push_back(i);
+        
+        //Push length of string for all keys at the end of each value list
+        for(int i=0;i<26;++i)   hashmap[i].push_back(n);
+        
+        long long count = 0;
+        for(int i=0;i<26;++i){
+            for(int j=1;j<hashmap[i].size()-1;++j)
+                count += (hashmap[i][j]-hashmap[i][j-1]) * (hashmap[i][j+1]-hashmap[i][j]);
+        }
+        return count;
+    }
+};
+
+//Java
+import java.util.ArrayList;
+import java.util.List;
+
+class Solution {
+    public int uniqueLetterString(String s) {
+        int n = s.length();
+        List<List<Integer>> hashmap = new ArrayList<>(26);
+
+        // Initialize lists with -1
+        for (int i = 0; i < 26; i++) {
+            hashmap.add(new ArrayList<>());
+            hashmap.get(i).add(-1);
+        }
+
+        // Store all indices
+        for (int i = 0; i < n; i++) {
+            hashmap.get(s.charAt(i) - 'A').add(i);
+        }
+
+        // Add length of string to the end of each list
+        for (int i = 0; i < 26; i++) {
+            hashmap.get(i).add(n);
+        }
+
+        long count = 0;
+        for (int i = 0; i < 26; i++) {
+            List<Integer> indices = hashmap.get(i);
+            for (int j = 1; j < indices.size() - 1; j++) {
+                count += (long) (indices.get(j) - indices.get(j - 1)) * (indices.get(j + 1) - indices.get(j));
+            }
+        }
+
+        return (int) count;
+    }
+}
+
+#Python
+
+class Solution:
+    def uniqueLetterString(self, s: str) -> int:
+        n = len(s)
+        hashmap = [[] for _ in range(26)]
+
+        # Initialize each list with -1
+        for i in range(26):
+            hashmap[i].append(-1)
+
+        # Store all indices
+        for i, char in enumerate(s):
+            hashmap[ord(char) - ord('A')].append(i)
+
+        # Append length of string to the end of each list
+        for i in range(26):
+            hashmap[i].append(n)
+
+        count = 0
+        for indices in hashmap:
+            for j in range(1, len(indices) - 1):
+                count += (indices[j] - indices[j - 1]) * (indices[j + 1] - indices[j])
+
+        return count
