@@ -1,0 +1,102 @@
+//C++
+
+class Solution {
+    int mem[55];
+    int minBreak(string& s,int pos,unordered_set<string>& words){
+        if(pos>=s.size())   return 0;           //String ends
+        if(mem[pos]!=-1)    return mem[pos];    //Already calculated
+
+        int min_count=INT_MAX;                  //Minimize non-dictionary chars
+        int curr_count;                         
+        string curr;                            //Storing current substring
+
+        for(int i=pos;i<s.size();++i){          //Partition points
+            curr_count=0;                       //Set fresh count at new start point
+            curr.push_back(s[i]);
+
+            if(!words.count(curr))              //substring not in dictionary
+                curr_count+=i-pos+1;
+
+            curr_count+=minBreak(s,i+1,words);
+            min_count = min(min_count, curr_count);
+        }
+        return mem[pos] = min_count;
+    }
+public:
+    int minExtraChar(string s, vector<string>& dictionary) {
+        memset(mem,-1,sizeof(mem));
+        unordered_set<string> words(dictionary.begin(),dictionary.end());
+        return minBreak(s,0,words);
+    }
+};
+
+//Java
+
+import java.util.*;
+
+class Solution {
+
+    int[] mem;
+
+    private int minBreak(String s, int pos, Set<String> dict) {
+        if (pos >= s.length()) return 0;
+        if (mem[pos] != -1) return mem[pos];
+
+        int minCount = Integer.MAX_VALUE;
+        StringBuilder curr = new StringBuilder();
+
+        for (int i = pos; i < s.length(); i++) {
+            curr.append(s.charAt(i));
+            int currCount = 0;
+
+            // If substring not in dictionary → count all chars
+            if (!dict.contains(curr.toString()))
+                currCount += (i - pos + 1);
+
+            currCount += minBreak(s, i + 1, dict);
+            minCount = Math.min(minCount, currCount);
+        }
+
+        return mem[pos] = minCount;
+    }
+
+    public int minExtraChar(String s, String[] dictionary) {
+        mem = new int[55];
+        Arrays.fill(mem, -1);
+
+        Set<String> dict = new HashSet<>(Arrays.asList(dictionary));
+
+        return minBreak(s, 0, dict);
+    }
+}
+
+
+#Python
+
+class Solution:
+    def minBreak(self, s, pos, words, memo):
+        if pos >= len(s):
+            return 0
+        if memo[pos] != -1:
+            return memo[pos]
+
+        min_count = float('inf')
+        curr = ""
+
+        for i in range(pos, len(s)):
+            curr += s[i]
+            curr_count = 0
+
+            if curr not in words:
+                curr_count += (i - pos + 1)
+
+            curr_count += self.minBreak(s, i + 1, words, memo)
+            min_count = min(min_count, curr_count)
+
+        memo[pos] = min_count
+        return min_count
+
+    def minExtraChar(self, s, dictionary):
+        memo = [-1] * 55
+        words = set(dictionary)
+        return self.minBreak(s, 0, words, memo)
