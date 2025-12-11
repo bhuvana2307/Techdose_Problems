@@ -1,0 +1,132 @@
+//C++
+
+class Solution {
+    struct trienode{
+        int pc;
+        map<int,trienode*> child;
+        trienode(){
+            this->pc=0;
+        }
+    };
+    void trie_insert(trienode* curr,string& s){
+        int idx;
+        for(int i=0;s[i]!='\0';++i){
+            idx = s[i]-'a';
+            if(!curr->child.count(idx))
+                curr->child[idx] = new trienode;
+            curr = curr->child[idx];
+            curr->pc++;
+        }
+    }
+    int trie_search(trienode* curr,string& s){
+        int idx;
+        int count=0;
+        for(int i=0;s[i]!='\0';++i){
+            idx = s[i]-'a';
+            // if(!curr->child.count(idx))
+            //     return count;
+            curr=curr->child[idx];
+            count += curr->pc;
+        }
+        return count;
+    }
+public:
+    vector<int> sumPrefixScores(vector<string>& words) {
+        trienode* root = new trienode;
+
+        int n=words.size();
+        for(int i=0;i<n;++i)
+            trie_insert(root,words[i]);
+        
+        vector<int> ans(n);
+        for(int i=0;i<n;++i)
+            ans[i] = trie_search(root,words[i]);
+        
+        return ans;
+    }
+}
+
+//Java
+
+class Solution {
+
+    class TrieNode {
+        int pc;  // prefix count
+        Map<Integer, TrieNode> child;
+
+        TrieNode() {
+            pc = 0;
+            child = new HashMap<>();
+        }
+    }
+
+    private void insert(TrieNode curr, String s) {
+        for (int i = 0; i < s.length(); i++) {
+            int idx = s.charAt(i) - 'a';
+            curr.child.putIfAbsent(idx, new TrieNode());
+            curr = curr.child.get(idx);
+            curr.pc++;
+        }
+    }
+
+    private int search(TrieNode curr, String s) {
+        int count = 0;
+        for (int i = 0; i < s.length(); i++) {
+            int idx = s.charAt(i) - 'a';
+            curr = curr.child.get(idx);
+            count += curr.pc;
+        }
+        return count;
+    }
+
+    public int[] sumPrefixScores(String[] words) {
+        TrieNode root = new TrieNode();
+
+        for (String word : words)
+            insert(root, word);
+
+        int n = words.length;
+        int[] ans = new int[n];
+
+        for (int i = 0; i < n; i++)
+            ans[i] = search(root, words[i]);
+
+        return ans;
+    }
+}
+
+
+#Python
+
+class TrieNode:
+    def __init__(self):
+        self.pc = 0
+        self.child = {}  # key: index 0-25
+
+
+class Solution:
+    def insert(self, root, s):
+        curr = root
+        for ch in s:
+            idx = ord(ch) - ord('a')
+            if idx not in curr.child:
+                curr.child[idx] = TrieNode()
+            curr = curr.child[idx]
+            curr.pc += 1
+
+    def search(self, root, s):
+        curr = root
+        count = 0
+        for ch in s:
+            idx = ord(ch) - ord('a')
+            curr = curr.child[idx]
+            count += curr.pc
+        return count
+
+    def sumPrefixScores(self, words):
+        root = TrieNode()
+
+        for w in words:
+            self.insert(root, w)
+
+        return [self.search(root, w) for w in words]
