@@ -1,0 +1,328 @@
+//C++
+
+class MyCircularDeque {
+    struct node{
+        int val;
+        node *next,*prev;
+        node(int val){
+            this->val = val;
+            next = prev = NULL;
+        }
+    };
+    node *head,*tail;
+    int maxSize;
+    int listSize;
+public:
+    MyCircularDeque(int k) {
+        maxSize = k;
+        listSize = 0;
+        head = tail = NULL;
+    }
+    
+    bool insertFront(int value) {
+        if(listSize == maxSize) //Overflow
+            return false;
+    
+        node *newnode = new node(value);
+        if(!head){
+            head = tail = newnode;
+            head->next = head;  //Make it circular
+            tail->prev = head;
+        }else{
+            newnode->next = head;
+            head->prev = newnode;
+            tail->next = newnode;
+            newnode->prev = tail;
+            head = newnode;
+        }
+        listSize++;
+        return true;
+    }
+
+    bool insertLast(int value) {
+        if(listSize == maxSize)//Overflow
+            return false;
+
+        node *newnode = new node(value);
+        if(!head){
+            head = tail = newnode;
+            head->next = head;  //Make it circular
+            tail->prev = head;
+        }else{
+            tail->next = newnode;
+            newnode->prev = tail;
+            newnode->next = head;
+            tail = newnode;
+            head->prev = tail;
+        }
+        listSize++;
+        return true;
+    }
+    
+    bool deleteFront() {
+        if(listSize==0)
+            return false;
+        
+        if(listSize==1){
+            delete head;    //Avoiding memory leak
+            head = tail = NULL;
+        } else {
+            node *curr = head;
+            head = head->next;
+            curr->next = curr->prev = NULL;
+            head->prev = tail;
+            tail->next = head;
+            delete curr;    //Avoiding memory leak
+        }
+        listSize--;
+        return true;
+    }
+    
+    bool deleteLast() {
+        if(listSize==0)
+            return false;
+        
+        if(listSize==1){
+            delete head;    //Avoiding memory leak
+            head = tail = NULL;
+        } else {
+            node* curr = tail;
+            tail = tail->prev;
+            tail->next = head;
+            head->prev = tail;
+            curr->prev = curr->next = NULL;
+            delete curr;    //Avoiding memory leak
+        }
+        listSize--;
+        return true;
+    }
+    
+    int getFront() {
+        if(listSize==0)
+            return -1;
+        return head->val;
+    }
+    
+    int getRear() {
+        if(listSize==0)
+            return -1;
+        return tail->val;
+    }
+    
+    bool isEmpty() {
+        return listSize==0;
+    }
+    
+    bool isFull() {
+        return listSize==maxSize;
+    }
+};
+
+
+//Java
+
+class MyCircularDeque {
+
+    private class Node {
+        int val;
+        Node next, prev;
+
+        Node(int val) {
+            this.val = val;
+        }
+    }
+
+    private Node head, tail;
+    private int maxSize;
+    private int listSize;
+
+    public MyCircularDeque(int k) {
+        this.maxSize = k;
+        this.listSize = 0;
+        this.head = null;
+        this.tail = null;
+    }
+
+    public boolean insertFront(int value) {
+        if (listSize == maxSize) return false;
+
+        Node newNode = new Node(value);
+
+        if (head == null) {
+            head = tail = newNode;
+            head.next = head; 
+            head.prev = head; 
+        } else {
+            newNode.next = head;
+            newNode.prev = tail;
+            head.prev = newNode;
+            tail.next = newNode;
+            head = newNode;
+        }
+        listSize++;
+        return true;
+    }
+
+    public boolean insertLast(int value) {
+        if (listSize == maxSize) return false;
+
+        Node newNode = new Node(value);
+
+        if (head == null) {
+            head = tail = newNode;
+            head.next = head;
+            head.prev = head;
+        } else {
+            newNode.prev = tail;
+            newNode.next = head;
+            tail.next = newNode;
+            head.prev = newNode;
+            tail = newNode;
+        }
+        listSize++;
+        return true;
+    }
+
+    public boolean deleteFront() {
+        if (listSize == 0) return false;
+
+        if (listSize == 1) {
+            head = tail = null;
+        } else {
+            head = head.next;
+            head.prev = tail;
+            tail.next = head;
+        }
+        listSize--;
+        return true;
+    }
+
+    public boolean deleteLast() {
+        if (listSize == 0) return false;
+
+        if (listSize == 1) {
+            head = tail = null;
+        } else {
+            tail = tail.prev;
+            tail.next = head;
+            head.prev = tail;
+        }
+        listSize--;
+        return true;
+    }
+
+    public int getFront() {
+        return listSize == 0 ? -1 : head.val;
+    }
+
+    public int getRear() {
+        return listSize == 0 ? -1 : tail.val;
+    }
+
+    public boolean isEmpty() {
+        return listSize == 0;
+    }
+
+    public boolean isFull() {
+        return listSize == maxSize;
+    }
+}
+
+
+
+#Python
+
+class Node:
+    def __init__(self, val):
+        self.val = val
+        self.next = None
+        self.prev = None
+
+
+class MyCircularDeque:
+
+    def __init__(self, k: int):
+        self.maxSize = k
+        self.listSize = 0
+        self.head = None
+        self.tail = None
+
+    def insertFront(self, value: int) -> bool:
+        if self.listSize == self.maxSize:
+            return False
+
+        newnode = Node(value)
+
+        if not self.head:
+            self.head = self.tail = newnode
+            newnode.next = newnode
+            newnode.prev = newnode
+        else:
+            newnode.next = self.head
+            newnode.prev = self.tail
+            self.tail.next = newnode
+            self.head.prev = newnode
+            self.head = newnode
+
+        self.listSize += 1
+        return True
+
+    def insertLast(self, value: int) -> bool:
+        if self.listSize == self.maxSize:
+            return False
+
+        newnode = Node(value)
+
+        if not self.head:
+            self.head = self.tail = newnode
+            newnode.next = newnode
+            newnode.prev = newnode
+        else:
+            newnode.prev = self.tail
+            newnode.next = self.head
+            self.tail.next = newnode
+            self.head.prev = newnode
+            self.tail = newnode
+
+        self.listSize += 1
+        return True
+
+    def deleteFront(self) -> bool:
+        if self.listSize == 0:
+            return False
+
+        if self.listSize == 1:
+            self.head = self.tail = None
+        else:
+            self.head = self.head.next
+            self.head.prev = self.tail
+            self.tail.next = self.head
+
+        self.listSize -= 1
+        return True
+
+    def deleteLast(self) -> bool:
+        if self.listSize == 0:
+            return False
+
+        if self.listSize == 1:
+            self.head = self.tail = None
+        else:
+            self.tail = self.tail.prev
+            self.tail.next = self.head
+            self.head.prev = self.tail
+
+        self.listSize -= 1
+        return True
+
+    def getFront(self) -> int:
+        return -1 if self.listSize == 0 else self.head.val
+
+    def getRear(self) -> int:
+        return -1 if self.listSize == 0 else self.tail.val
+
+    def isEmpty(self) -> bool:
+        return self.listSize == 0
+
+    def isFull(self) -> bool:
+        return self.listSize == self.maxSize
