@@ -1,0 +1,284 @@
+//C++
+
+class AllOne {
+    // Definition of the node structure representing a frequency bucket in the doubly linked list
+    struct node {
+        unordered_set<string> keys;  // Set of keys with the same frequency
+        int freq;                    // Frequency of the keys
+        node *next, *prev;           // Pointers to the next and previous nodes
+    };
+    
+    node *head, *tail;               // Pointers to the dummy head and tail nodes of the list
+    unordered_map<string, node*> keyStore; // Map to store the mapping of keys to their respective frequency node
+    
+    // Helper function to create a new node with a given key and frequency
+    node* getNewNode(string key, int freq) {
+        node* newnode = new node;
+        newnode->keys.insert(key);  // Add the key to the new node's key set
+        newnode->freq = freq;       // Set the node's frequency
+        newnode->next = newnode->prev = NULL; // Initialize pointers to NULL
+        return newnode;
+    }
+    
+    // Helper function to remove a node from the doubly linked list
+    void removeNode(node* curr) {
+        curr->prev->next = curr->next;  // Update the previous node's next pointer
+        curr->next->prev = curr->prev;  // Update the next node's prev pointer
+        curr->next = curr->prev = NULL; // Isolate the current node
+        delete curr;                    // Delete the node to free memory
+    }
+    
+    // Helper function to insert a new node to the right of a given node
+    void add_right_node(node* curr, string key, int freq) {
+        node *newnode = getNewNode(key, freq);  // Create a new node with the key and frequency
+        newnode->next = curr->next;             // Link the new node's next pointer to current's next
+        newnode->prev = curr;                   // Link the new node's prev pointer to the current node
+        curr->next->prev = newnode;             // Update the next node's prev pointer to the new node
+        curr->next = newnode;                   // Update the current node's next pointer to the new node
+    }
+    
+public:
+    // Constructor to initialize the data structure
+    AllOne() {
+        head = getNewNode("", -10);   // Create a dummy head node with a sentinel frequency (-10)
+        tail = getNewNode("", -10);   // Create a dummy tail node with a sentinel frequency (-10)
+        head->next = tail;            // Link the head's next pointer to the tail
+        tail->prev = head;            // Link the tail's prev pointer to the head
+    }
+    
+    // Increases the count of a key by 1
+    void inc(string key) {
+        if (keyStore.count(key)) {    // If the key is already present
+            node *curr = keyStore[key];  // Get the node where the key currently exists
+            curr->keys.erase(key);       // Remove the key from the current node's key set
+            
+            // If the next node has the correct frequency, add the key there
+            if (curr->next->freq == curr->freq + 1) {
+                curr->next->keys.insert(key);
+            } else {
+                // Otherwise, create a new node for the increased frequency
+                add_right_node(curr, key, curr->freq + 1);
+            }
+            
+            keyStore[key] = curr->next;  // Update the key's position in the keyStore map
+            
+            // If the current node is empty, remove it
+            if (curr->keys.empty()) removeNode(curr);
+        } else {  // If the key is not present
+            // If there's already a node with frequency 1 after head, add the key there
+            if (head->next->freq == 1) {
+                head->next->keys.insert(key);
+            } else {
+                // Otherwise, create a new node with frequency 1
+                add_right_node(head, key, 1);
+            }
+            keyStore[key] = head->next;  // Update keyStore to point to the new node
+        }
+    }
+    
+    // Decreases the count of a key by 1
+    void dec(string key) {
+        node *curr = keyStore[key];   // Get the node where the key currently exists
+        curr->keys.erase(key);        // Remove the key from the current node's key set
+        
+        if (curr->freq == 1) {  // If the key's frequency becomes zero
+            keyStore.erase(key);  // Remove the key from keyStore
+        } else {
+            // If there's already a node with the correct frequency before the current node
+            if (curr->prev->freq == curr->freq - 1) {
+                curr->prev->keys.insert(key);  // Move the key to the previous node
+            } else {
+                // Otherwise, create a new node for the decreased frequency
+                add_right_node(curr->prev, key, curr->freq - 1);
+            }
+            keyStore[key] = curr->prev;  // Update the key's position in the keyStore map
+        }
+        
+        // If the current node is empty, remove it
+        if (curr->keys.empty()) removeNode(curr);
+    }
+    
+    // Returns one of the keys with the maximum frequency
+    string getMaxKey() {
+        if (tail->prev == head) return "";  // If the list is empty, return an empty string
+        return *(tail->prev->keys.begin()); // Return any key from the node with the highest frequency
+    }
+    
+    // Returns one of the keys with the minimum frequency
+    string getMinKey() {
+        if (head->next == tail) return "";  // If the list is empty, return an empty string
+        return *(head->next->keys.begin()); // Return any key from the node with the lowest frequency
+    }
+};
+
+//Java
+
+import java.util.*;
+
+class AllOne {
+
+    private class Node {
+        Set<String> keys = new HashSet<>();
+        int freq;
+        Node prev, next;
+
+        Node(String key, int freq) {
+            if (!key.equals("")) keys.add(key);
+            this.freq = freq;
+        }
+    }
+
+    private Node head, tail;
+    private Map<String, Node> keyStore;
+
+    public AllOne() {
+        head = new Node("", -10);
+        tail = new Node("", -10);
+        head.next = tail;
+        tail.prev = head;
+        keyStore = new HashMap<>();
+    }
+
+    private void addRight(Node curr, String key, int freq) {
+        Node newNode = new Node(key, freq);
+        newNode.next = curr.next;
+        newNode.prev = curr;
+        curr.next.prev = newNode;
+        curr.next = newNode;
+    }
+
+    private void removeNode(Node curr) {
+        curr.prev.next = curr.next;
+        curr.next.prev = curr.prev;
+    }
+
+    public void inc(String key) {
+        if (keyStore.containsKey(key)) {
+            Node curr = keyStore.get(key);
+            curr.keys.remove(key);
+
+            if (curr.next.freq == curr.freq + 1) {
+                curr.next.keys.add(key);
+            } else {
+                addRight(curr, key, curr.freq + 1);
+            }
+
+            keyStore.put(key, curr.next);
+
+            if (curr.keys.isEmpty()) removeNode(curr);
+
+        } else {
+            if (head.next.freq == 1) {
+                head.next.keys.add(key);
+            } else {
+                addRight(head, key, 1);
+            }
+            keyStore.put(key, head.next);
+        }
+    }
+
+    public void dec(String key) {
+        Node curr = keyStore.get(key);
+        curr.keys.remove(key);
+
+        if (curr.freq == 1) {
+            keyStore.remove(key);
+        } else {
+            if (curr.prev.freq == curr.freq - 1) {
+                curr.prev.keys.add(key);
+            } else {
+                addRight(curr.prev, key, curr.freq - 1);
+            }
+            keyStore.put(key, curr.prev);
+        }
+
+        if (curr.keys.isEmpty()) removeNode(curr);
+    }
+
+    public String getMaxKey() {
+        if (tail.prev == head) return "";
+        return tail.prev.keys.iterator().next();
+    }
+
+    public String getMinKey() {
+        if (head.next == tail) return "";
+        return head.next.keys.iterator().next();
+    }
+}
+
+
+#Python
+
+class Node:
+    def __init__(self, key="", freq=-10):
+        self.keys = set()
+        if key != "":
+            self.keys.add(key)
+        self.freq = freq
+        self.prev = None
+        self.next = None
+
+
+class AllOne:
+
+    def __init__(self):
+        self.head = Node("", -10)
+        self.tail = Node("", -10)
+        self.head.next = self.tail
+        self.tail.prev = self.head
+        self.keyStore = {}  # key -> node
+
+    def add_right(self, curr, key, freq):
+        newNode = Node(key, freq)
+        newNode.next = curr.next
+        newNode.prev = curr
+        curr.next.prev = newNode
+        curr.next = newNode
+
+    def remove_node(self, curr):
+        curr.prev.next = curr.next
+        curr.next.prev = curr.prev
+
+    def inc(self, key: str) -> None:
+        if key in self.keyStore:
+            curr = self.keyStore[key]
+            curr.keys.remove(key)
+
+            if curr.next.freq == curr.freq + 1:
+                curr.next.keys.add(key)
+            else:
+                self.add_right(curr, key, curr.freq + 1)
+
+            self.keyStore[key] = curr.next
+
+            if not curr.keys:
+                self.remove_node(curr)
+
+        else:
+            if self.head.next.freq == 1:
+                self.head.next.keys.add(key)
+            else:
+                self.add_right(self.head, key, 1)
+            self.keyStore[key] = self.head.next
+
+    def dec(self, key: str) -> None:
+        curr = self.keyStore[key]
+        curr.keys.remove(key)
+
+        if curr.freq == 1:
+            del self.keyStore[key]
+        else:
+            if curr.prev.freq == curr.freq - 1:
+                curr.prev.keys.add(key)
+            else:
+                self.add_right(curr.prev, key, curr.freq - 1)
+            self.keyStore[key] = curr.prev
+
+        if not curr.keys:
+            self.remove_node(curr)
+
+    def getMaxKey(self) -> str:
+        return "" if self.tail.prev == self.head else next(iter(self.tail.prev.keys))
+
+    def getMinKey(self) -> str:
+        return "" if self.head.next == self.tail else next(iter(self.head.next.keys))
