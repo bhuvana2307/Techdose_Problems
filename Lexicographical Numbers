@@ -1,0 +1,204 @@
+//C++
+
+class Solution {
+    void dfs(int curr,int& n,vector<int>& ans){
+        if(curr>n)  return;
+
+        ans.push_back(curr);
+        for(int i=0;i<=9;++i)//Not MSD
+            dfs(curr*10+i,n,ans);
+    }
+public:
+    vector<int> lexicalOrder(int n) {
+        vector<int> ans;
+        for(int i=1;i<=9;++i){//Most significant digit
+            dfs(i,n,ans);
+        }
+        return ans;
+    }
+};
+
+/*
+//TRIE: TC->O(N)
+class Solution {
+    struct trienode{
+        int we=0;
+        int digit;
+        map<int,trienode*> child;
+        trienode(){
+            this->we=0;
+        }
+    };
+    void trie_insert(trienode* curr,int n){
+        string s=to_string(n);
+        int idx;
+        for(int i=0;s[i]!='\0';++i){
+            idx=s[i]-'0';
+            if(!curr->child.count(idx))
+                curr->child[idx] = new trienode;
+            curr = curr->child[idx];
+            curr->digit = idx;
+        }
+        curr->we++;
+    }
+    void trie_search(trienode* curr,vector<int>& ans,int number){
+        if(!curr)   return;
+        if(curr->we)
+            ans.push_back(number);
+
+        for(int i=0;i<=9;++i){
+            if(curr->child.count(i)){
+                trie_search(curr->child[i],ans,number*10 + i);
+            }
+        }
+    }
+public:
+    vector<int> lexicalOrder(int n) {
+        trienode* root=new trienode;
+        for(int i=1;i<=n;++i)
+            trie_insert(root,i);
+        
+        vector<int> ans;
+        trie_search(root,ans,0);
+        return ans;
+    }
+};
+*/
+
+//Java
+
+class Solution {
+
+    private void dfs(int curr, int n, List<Integer> ans) {
+        if (curr > n) return;
+
+        ans.add(curr);
+
+        for (int i = 0; i <= 9; i++) {
+            dfs(curr * 10 + i, n, ans);
+        }
+    }
+
+    public List<Integer> lexicalOrder(int n) {
+        List<Integer> ans = new ArrayList<>();
+
+        for (int i = 1; i <= 9; i++) {
+            dfs(i, n, ans);
+        }
+
+        return ans;
+    }
+}
+
+//Trie
+/*
+import java.util.*;
+
+class Solution {
+
+    class TrieNode {
+        int we = 0;                  // word-end count
+        int digit = -1;
+        Map<Integer, TrieNode> child = new HashMap<>();
+    }
+
+    private void insert(TrieNode curr, int num) {
+        String s = String.valueOf(num);
+
+        for (char c : s.toCharArray()) {
+            int idx = c - '0';
+            curr.child.putIfAbsent(idx, new TrieNode());
+            curr = curr.child.get(idx);
+            curr.digit = idx;
+        }
+        curr.we++;
+    }
+
+    private void search(TrieNode curr, List<Integer> ans, int number) {
+        if (curr == null) return;
+
+        if (curr.we > 0)
+            ans.add(number);
+
+        for (int i = 0; i <= 9; i++) {
+            if (curr.child.containsKey(i)) {
+                search(curr.child.get(i), ans, number * 10 + i);
+            }
+        }
+    }
+
+    public List<Integer> lexicalOrder(int n) {
+        TrieNode root = new TrieNode();
+
+        for (int i = 1; i <= n; i++)
+            insert(root, i);
+
+        List<Integer> ans = new ArrayList<>();
+        search(root, ans, 0);
+        return ans;
+    }
+}
+
+*/
+
+
+#Python
+
+class Solution:
+    def dfs(self, curr, n, ans):
+        if curr > n:
+            return
+        
+        ans.append(curr)
+
+        for i in range(10):
+            self.dfs(curr * 10 + i, n, ans)
+
+    def lexicalOrder(self, n: int):
+        ans = []
+        for i in range(1, 10):
+            self.dfs(i, n, ans)
+        return ans
+
+
+#Trie
+/*
+class TrieNode:
+    def __init__(self):
+        self.we = 0                     # word-end count
+        self.digit = -1
+        self.child = {}                 # map digit -> node
+
+
+class Solution:
+    def insert(self, root, num):
+        curr = root
+        for ch in str(num):
+            idx = ord(ch) - ord('0')
+            if idx not in curr.child:
+                curr.child[idx] = TrieNode()
+            curr = curr.child[idx]
+            curr.digit = idx
+        curr.we += 1
+
+    def search(self, curr, ans, number):
+        if curr is None:
+            return
+
+        if curr.we > 0:
+            ans.append(number)
+
+        for d in range(10):
+            if d in curr.child:
+                self.search(curr.child[d], ans, number * 10 + d)
+
+    def lexicalOrder(self, n: int):
+        root = TrieNode()
+        for i in range(1, n + 1):
+            self.insert(root, i)
+
+        ans = []
+        self.search(root, ans, 0)
+        return ans
+
+*/
