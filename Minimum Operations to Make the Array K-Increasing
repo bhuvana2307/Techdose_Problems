@@ -1,0 +1,83 @@
+//C++
+
+class Solution {
+public:
+    int kIncreasing(vector<int>& arr, int k) {
+        int lisLen=0;
+        int n=arr.size();
+        //LIS for K independent subarrays
+        for(int i=0;i<k;++i){
+            vector<int> lis;
+            for(int j=i;j<n;j+=k){
+                if(lis.empty() or lis.back()<=arr[j])
+                    lis.push_back(arr[j]);
+                else{
+                    int ub = upper_bound(lis.begin(),lis.end(),arr[j])-lis.begin();
+                    lis[ub] = arr[j];
+                }
+            }
+            lisLen += lis.size();
+        }
+        return arr.size()-lisLen;
+    }
+};
+
+//Java
+
+import java.util.*;
+
+class Solution {
+    public int kIncreasing(int[] arr, int k) {
+        int n = arr.length;
+        int lisLen = 0;
+
+        for (int start = 0; start < k; start++) {
+
+            List<Integer> lis = new ArrayList<>();
+
+            for (int j = start; j < n; j += k) {
+
+                int x = arr[j];
+
+                if (lis.isEmpty() || lis.get(lis.size() - 1) <= x) {
+                    lis.add(x);
+                } else {
+                    // upper_bound: first index > x
+                    int idx = Collections.binarySearch(lis, x);
+                    if (idx < 0) idx = -idx - 1;  // upper_bound behavior
+                    lis.set(idx, x);
+                }
+            }
+
+            lisLen += lis.size();
+        }
+
+        return n - lisLen;
+    }
+}
+
+
+#Python
+
+from bisect import bisect_right
+
+class Solution:
+    def kIncreasing(self, arr, k):
+        n = len(arr)
+        lis_len = 0
+
+        for start in range(k):
+            lis = []
+
+            for j in range(start, n, k):
+                x = arr[j]
+
+                if not lis or lis[-1] <= x:
+                    lis.append(x)
+                else:
+                    idx = bisect_right(lis, x)  # same as upper_bound
+                    lis[idx] = x
+
+            lis_len += len(lis)
+
+        return n - lis_len
