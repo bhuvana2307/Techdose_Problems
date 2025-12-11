@@ -1,0 +1,90 @@
+//C++
+
+class CustomStack {
+    vector<int> stack;
+    int maxSize;
+    int currSize;
+public:
+    CustomStack(int maxSize) {
+        this->maxSize = maxSize;
+        currSize = 0;
+    }
+    
+    void push(int x) {
+        if(currSize == maxSize)//Overflow
+            return;
+        
+        stack.push_back(x);
+        currSize++;
+    }
+    
+    int pop() {
+        if(currSize == 0)//Underflow
+            return -1;
+        
+        int top = stack.back();
+        stack.pop_back();
+        currSize--;
+        return top;
+    }
+    
+    void increment(int k, int val) {
+        for(int i=0; i< min(k,currSize); ++i)
+            stack[i] += val;
+    }
+};
+
+
+//Java
+
+class CustomStack {
+    private int[] stack;
+    private int maxSize;
+    private int currSize;
+
+    public CustomStack(int maxSize) {
+        this.maxSize = maxSize;
+        this.currSize = 0;
+        this.stack = new int[maxSize];
+    }
+    
+    public void push(int x) {
+        if (currSize == maxSize) return; // Overflow
+        stack[currSize++] = x;
+    }
+    
+    public int pop() {
+        if (currSize == 0) return -1; // Underflow
+        return stack[--currSize];
+    }
+    
+    public void increment(int k, int val) {
+        int limit = Math.min(k, currSize);
+        for (int i = 0; i < limit; i++) {
+            stack[i] += val;
+        }
+    }
+}
+
+
+#Python
+
+class CustomStack:
+    def __init__(self, maxSize: int):
+        self.stack = []
+        self.maxSize = maxSize
+
+    def push(self, x: int) -> None:
+        if len(self.stack) == self.maxSize:  # Overflow
+            return
+        self.stack.append(x)
+
+    def pop(self) -> int:
+        if not self.stack:  # Underflow
+            return -1
+        return self.stack.pop()
+
+    def increment(self, k: int, val: int) -> None:
+        limit = min(k, len(self.stack))
+        for i in range(limit):
+            self.stack[i] += val
