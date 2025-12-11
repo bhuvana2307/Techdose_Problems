@@ -1,0 +1,95 @@
+//C++
+
+class Solution {
+    #define ll long long
+    int countSteps(int n,ll prefix1,ll prefix2){
+        int steps=0;
+        while(prefix1<=n){
+            steps += min((ll)n+1,prefix2) - prefix1;//N+1: to include Nth Value in range count
+            prefix1 *= 10;  //Next level
+            prefix2 *= 10;  //Next level
+        }
+        return steps;
+    }
+public:
+    int findKthNumber(int n, int k) {
+        int curr=1; //Current number
+        k-=1;       //Skip the number which you are already present at
+
+        while(k){
+            int steps = countSteps(n,curr,curr+1);
+            if(steps<=k){
+                curr++;
+                k-=steps;
+            }else{
+                curr*=10;
+                k--;    //Current element has to be counted out
+            }
+        }
+        return curr;
+    }
+};
+
+//Java
+
+class Solution {
+
+    private long countSteps(long n, long prefix1, long prefix2) {
+        long steps = 0;
+
+        while (prefix1 <= n) {
+            steps += Math.min(n + 1, prefix2) - prefix1;
+            prefix1 *= 10;
+            prefix2 *= 10;
+        }
+
+        return steps;
+    }
+
+    public int findKthNumber(int n, int k) {
+        int curr = 1;
+        k -= 1; // skip the first number (1)
+
+        while (k > 0) {
+            long steps = countSteps(n, curr, curr + 1);
+
+            if (steps <= k) {
+                curr += 1;
+                k -= steps;
+            } else {
+                curr *= 10; 
+                k -= 1;
+            }
+        }
+
+        return curr;
+    }
+}
+
+
+#Python
+
+class Solution:
+    def countSteps(self, n, prefix1, prefix2):
+        steps = 0
+        while prefix1 <= n:
+            steps += min(n + 1, prefix2) - prefix1
+            prefix1 *= 10
+            prefix2 *= 10
+        return steps
+
+    def findKthNumber(self, n: int, k: int) -> int:
+        curr = 1
+        k -= 1  # skip the very first number
+
+        while k > 0:
+            steps = self.countSteps(n, curr, curr + 1)
+
+            if steps <= k:
+                curr += 1
+                k -= steps
+            else:
+                curr *= 10
+                k -= 1
+
+        return curr
