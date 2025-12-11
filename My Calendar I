@@ -1,0 +1,69 @@
+//C++
+
+class MyCalendar {
+    map<int,int> intervals;//Key->End...Value->Start
+public:
+    MyCalendar() {
+    
+    }
+    
+    bool book(int start, int end) {
+        auto it = intervals.upper_bound(start);
+        if(it==intervals.end() || it->second>=end){//No Overlap condition
+            intervals[end]=start;
+            return true;
+        }
+        return false;
+    }
+};
+
+//Java
+
+import java.util.*;
+
+class MyCalendar {
+
+    private TreeMap<Integer, Integer> intervals; // end -> start
+
+    public MyCalendar() {
+        intervals = new TreeMap<>();
+    }
+
+    public boolean book(int start, int end) {
+        // Find first interval whose end > start
+        Map.Entry<Integer, Integer> it = intervals.higherEntry(start);
+
+        // No overlap if:
+        // 1) No future interval
+        // 2) That interval starts AFTER or exactly at 'end'
+        if (it == null || it.getValue() >= end) {
+            intervals.put(end, start);
+            return true;
+        }
+        return false;
+    }
+}
+
+
+#Python
+
+class MyCalendar:
+
+    def __init__(self):
+        # store as list of (end, start), sorted by end
+        self.intervals = []
+
+    def book(self, start: int, end: int) -> bool:
+        # find index where this `end` would be inserted
+        from bisect import bisect_right
+
+        ends = [e for e, s in self.intervals]
+        i = bisect_right(ends, start)
+
+        # Check overlap
+        if i == len(self.intervals) or self.intervals[i][1] >= end:
+            # insert keeping sorted order
+            self.intervals.insert(i, (end, start))
+            return True
+
+        return False
