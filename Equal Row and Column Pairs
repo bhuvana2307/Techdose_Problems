@@ -1,0 +1,136 @@
+//C++
+
+class Solution {
+    struct trienode{
+        int we;
+        map<int,trienode*> child;
+        trienode(){
+            this->we=0;
+        }
+    };
+
+    void trie_insert(vector<vector<int>>& grid,trienode *root){
+        int n=grid.size();
+        for(int i=0;i<n;++i){
+            trienode* curr=root;
+            for(int j=0;j<n;++j){
+                if(curr->child.find(grid[j][i]) == curr->child.end())
+                    curr->child[grid[j][i]] = new trienode;
+                curr=curr->child[grid[j][i]];
+            }
+            curr->we++;
+        }
+    }
+    int trie_search(vector<int>& row,trienode *root){
+        trienode* curr=root;
+        for(int i=0;i<row.size();++i){
+            if(!curr->child[row[i]])
+                return 0;
+            curr = curr->child[row[i]];
+        }
+        return curr->we;
+    }
+public:
+    int equalPairs(vector<vector<int>>& grid) {
+        trienode *root = new trienode;
+        //Insert each column separately in trie
+        trie_insert(grid,root);
+        
+        int count=0;
+        //Search for matches for each row
+        for(auto& row: grid)
+            count += trie_search(row,root);
+        return count;
+    }
+};
+
+//Java
+
+import java.util.*;
+
+class Solution {
+
+    class TrieNode {
+        int we = 0;                         // word-ending count
+        Map<Integer, TrieNode> child = new HashMap<>();
+    }
+
+    private void trieInsert(int[][] grid, TrieNode root) {
+        int n = grid.length;
+
+        for (int col = 0; col < n; col++) {
+            TrieNode curr = root;
+
+            for (int row = 0; row < n; row++) {
+                int val = grid[row][col];
+                curr.child.putIfAbsent(val, new TrieNode());
+                curr = curr.child.get(val);
+            }
+            curr.we++;
+        }
+    }
+
+    private int trieSearch(int[] row, TrieNode root) {
+        TrieNode curr = root;
+
+        for (int val : row) {
+            if (!curr.child.containsKey(val))
+                return 0;
+            curr = curr.child.get(val);
+        }
+
+        return curr.we;
+    }
+
+    public int equalPairs(int[][] grid) {
+        TrieNode root = new TrieNode();
+        
+        trieInsert(grid, root);
+
+        int count = 0;
+        for (int[] row : grid)
+            count += trieSearch(row, root);
+
+        return count;
+    }
+}
+
+
+#Python
+
+class TrieNode:
+    def __init__(self):
+        self.we = 0
+        self.child = {}  # maps value -> TrieNode
+
+
+class Solution:
+    def trie_insert(self, grid, root):
+        n = len(grid)
+
+        for col in range(n):
+            curr = root
+            for row in range(n):
+                val = grid[row][col]
+                if val not in curr.child:
+                    curr.child[val] = TrieNode()
+                curr = curr.child[val]
+            curr.we += 1
+
+    def trie_search(self, row, root):
+        curr = root
+        for val in row:
+            if val not in curr.child:
+                return 0
+            curr = curr.child[val]
+        return curr.we
+
+    def equalPairs(self, grid):
+        root = TrieNode()
+        self.trie_insert(grid, root)
+
+        count = 0
+        for row in grid:
+            count += self.trie_search(row, root)
+
+        return count
