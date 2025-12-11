@@ -1,0 +1,301 @@
+//C++
+
+class Solution {
+    string digits2string(vector<int>& digits,map<int,string>& unitPlace,map<int,string>& tenPlace,
+                            map<int,string>& oneCase){
+        string res;
+        //For Billion
+        if(digits[9])    res += unitPlace[digits[9]]+" Billion ";
+        
+        //For Million
+        if(digits[8])
+            res += unitPlace[digits[8]]+" Hundred ";
+        if(digits[7]==1)    res+=oneCase[digits[6]]+" ";
+        else{
+            if(digits[7])   res+=tenPlace[digits[7]]+" ";
+            if(digits[6])   res+=unitPlace[digits[6]]+" ";
+        }
+        if(digits[8] or digits[7] or digits[6]) res+="Million ";
+
+        //For Thousand
+        if(digits[5])
+            res+=unitPlace[digits[5]]+" Hundred ";
+        if(digits[4]==1)    res+=oneCase[digits[3]]+" ";
+        else{
+            if(digits[4])   res+=tenPlace[digits[4]]+" ";
+            if(digits[3])   res+=unitPlace[digits[3]]+" ";
+        }
+        if(digits[5] or digits[4] or digits[3]) res+="Thousand ";
+
+        //For Hundred
+        if(digits[2])
+            res+=unitPlace[digits[2]]+" Hundred ";
+        if(digits[1]==1)    res+=oneCase[digits[0]]+" ";
+        else{
+            if(digits[1])   res+=tenPlace[digits[1]]+" ";
+            if(digits[0])   res+=unitPlace[digits[0]];
+        }
+
+        //remove spaces from the end
+        while(res.size() and res.back()==' ')
+            res.pop_back();
+        return res;
+    }
+public:
+    string numberToWords(int num) {
+        if(num==0)
+            return "Zero";
+
+        map<int,string> unitPlace;
+        unitPlace[0]="";
+        unitPlace[1]="One";
+        unitPlace[2]="Two";
+        unitPlace[3]="Three";
+        unitPlace[4]="Four";
+        unitPlace[5]="Five";
+        unitPlace[6]="Six";
+        unitPlace[7]="Seven";
+        unitPlace[8]="Eight";
+        unitPlace[9]="Nine";
+
+        map<int,string> tenPlace;
+        tenPlace[0]="";
+        tenPlace[1]="Ten";//We will never use this
+        tenPlace[2]="Twenty";
+        tenPlace[3]="Thirty";
+        tenPlace[4]="Forty";
+        tenPlace[5]="Fifty";
+        tenPlace[6]="Sixty";
+        tenPlace[7]="Seventy";
+        tenPlace[8]="Eighty";
+        tenPlace[9]="Ninety";
+
+        map<int,string> oneCase;
+        oneCase[0]="Ten";
+        oneCase[1]="Eleven";
+        oneCase[2]="Twelve";
+        oneCase[3]="Thirteen";
+        oneCase[4]="Fourteen";
+        oneCase[5]="Fifteen";
+        oneCase[6]="Sixteen";
+        oneCase[7]="Seventeen";
+        oneCase[8]="Eighteen";
+        oneCase[9]="Nineteen";
+
+        vector<int> digits;
+        int n=num;
+        //Extract all digits
+        while(n){
+            digits.push_back(n%10);
+            n/=10;
+        }
+        //Append leading 0's to make 10 digit number
+        while(digits.size()<10)
+            digits.push_back(0);
+
+        return digits2string(digits,unitPlace,tenPlace,oneCase);
+    }
+};
+
+//Java
+
+import java.util.*;
+
+class Solution {
+
+    private String digitsToString(int[] digits, Map<Integer,String> unit,
+                                  Map<Integer,String> tens, Map<Integer,String> teen) {
+        StringBuilder res = new StringBuilder();
+
+        // Billion
+        if (digits[9] != 0) 
+            res.append(unit.get(digits[9])).append(" Billion ");
+
+        // Million block
+        if (digits[8] != 0)
+            res.append(unit.get(digits[8])).append(" Hundred ");
+
+        if (digits[7] == 1) {
+            res.append(teen.get(digits[6])).append(" ");
+        } else {
+            if (digits[7] != 0) res.append(tens.get(digits[7])).append(" ");
+            if (digits[6] != 0) res.append(unit.get(digits[6])).append(" ");
+        }
+
+        if (digits[8] != 0 || digits[7] != 0 || digits[6] != 0)
+            res.append("Million ");
+
+        // Thousand block
+        if (digits[5] != 0)
+            res.append(unit.get(digits[5])).append(" Hundred ");
+
+        if (digits[4] == 1) {
+            res.append(teen.get(digits[3])).append(" ");
+        } else {
+            if (digits[4] != 0) res.append(tens.get(digits[4])).append(" ");
+            if (digits[3] != 0) res.append(unit.get(digits[3])).append(" ");
+        }
+
+        if (digits[5] != 0 || digits[4] != 0 || digits[3] != 0)
+            res.append("Thousand ");
+
+        // Hundred block
+        if (digits[2] != 0)
+            res.append(unit.get(digits[2])).append(" Hundred ");
+
+        if (digits[1] == 1) {
+            res.append(teen.get(digits[0])).append(" ");
+        } else {
+            if (digits[1] != 0) res.append(tens.get(digits[1])).append(" ");
+            if (digits[0] != 0) res.append(unit.get(digits[0]));
+        }
+
+        // trim end spaces
+        while (res.length() > 0 && res.charAt(res.length() - 1) == ' ')
+            res.deleteCharAt(res.length() - 1);
+
+        return res.toString();
+    }
+
+
+    public String numberToWords(int num) {
+        if (num == 0) return "Zero";
+
+        Map<Integer,String> unit = new HashMap<>();
+        unit.put(0,"");
+        unit.put(1,"One");
+        unit.put(2,"Two");
+        unit.put(3,"Three");
+        unit.put(4,"Four");
+        unit.put(5,"Five");
+        unit.put(6,"Six");
+        unit.put(7,"Seven");
+        unit.put(8,"Eight");
+        unit.put(9,"Nine");
+
+        Map<Integer,String> tens = new HashMap<>();
+        tens.put(0,"");
+        tens.put(1,"Ten"); // unused
+        tens.put(2,"Twenty");
+        tens.put(3,"Thirty");
+        tens.put(4,"Forty");
+        tens.put(5,"Fifty");
+        tens.put(6,"Sixty");
+        tens.put(7,"Seventy");
+        tens.put(8,"Eighty");
+        tens.put(9,"Ninety");
+
+        Map<Integer,String> teen = new HashMap<>();
+        teen.put(0,"Ten");
+        teen.put(1,"Eleven");
+        teen.put(2,"Twelve");
+        teen.put(3,"Thirteen");
+        teen.put(4,"Fourteen");
+        teen.put(5,"Fifteen");
+        teen.put(6,"Sixteen");
+        teen.put(7,"Seventeen");
+        teen.put(8,"Eighteen");
+        teen.put(9,"Nineteen");
+
+        int[] digits = new int[10];
+        int idx = 0;
+
+        int n = num;
+        while (n > 0) {
+            digits[idx++] = n % 10;
+            n /= 10;
+        }
+
+        return digitsToString(digits, unit, tens, teen);
+    }
+}
+
+
+#Python
+
+
+class Solution:
+    def digits_to_string(self, digits, unit, tens, teen):
+        res = []
+
+        # Billion
+        if digits[9]:
+            res.append(unit[digits[9]] + " Billion")
+
+        # Million block
+        if digits[8]:
+            res.append(unit[digits[8]] + " Hundred")
+
+        if digits[7] == 1:
+            res.append(teen[digits[6]])
+        else:
+            if digits[7]:
+                res.append(tens[digits[7]])
+            if digits[6]:
+                res.append(unit[digits[6]])
+
+        if digits[8] or digits[7] or digits[6]:
+            res.append("Million")
+
+        # Thousand block
+        if digits[5]:
+            res.append(unit[digits[5]] + " Hundred")
+
+        if digits[4] == 1:
+            res.append(teen[digits[3]])
+        else:
+            if digits[4]:
+                res.append(tens[digits[4]])
+            if digits[3]:
+                res.append(unit[digits[3]])
+
+        if digits[5] or digits[4] or digits[3]:
+            res.append("Thousand")
+
+        # Hundred block
+        if digits[2]:
+            res.append(unit[digits[2]] + " Hundred")
+
+        if digits[1] == 1:
+            res.append(teen[digits[0]])
+        else:
+            if digits[1]:
+                res.append(tens[digits[1]])
+            if digits[0]:
+                res.append(unit[digits[0]])
+
+        return " ".join(res).strip()
+
+
+    def numberToWords(self, num: int) -> str:
+        if num == 0:
+            return "Zero"
+
+        unit = {
+            0:"", 1:"One", 2:"Two", 3:"Three", 4:"Four",
+            5:"Five", 6:"Six", 7:"Seven", 8:"Eight", 9:"Nine"
+        }
+
+        tens = {
+            0:"", 1:"Ten",  # not used
+            2:"Twenty", 3:"Thirty", 4:"Forty", 5:"Fifty",
+            6:"Sixty", 7:"Seventy", 8:"Eighty", 9:"Ninety"
+        }
+
+        teen = {
+            0:"Ten", 1:"Eleven", 2:"Twelve", 3:"Thirteen",
+            4:"Fourteen", 5:"Fifteen", 6:"Sixteen",
+            7:"Seventeen", 8:"Eighteen", 9:"Nineteen"
+        }
+
+        # Extract 10 digits
+        digits = []
+        n = num
+        while n > 0:
+            digits.append(n % 10)
+            n //= 10
+
+        while len(digits) < 10:
+            digits.append(0)
+
+        return self.digits_to_string(digits, unit, tens, teen)
