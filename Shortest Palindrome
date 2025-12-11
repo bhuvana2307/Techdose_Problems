@@ -1,0 +1,104 @@
+//C++
+
+class Solution {
+public:
+    string shortestPalindrome(string s) {
+        int n=s.size();
+        string original = s;
+        string str = s;
+        reverse(s.begin(),s.end());
+        str += "*" + s;
+
+        //Apply KMP string comparison
+        vector<int> lps(2*n+1);
+        int i=0,j=1;
+        while(j<str.size()){
+            if(str[i]==str[j]){
+                lps[j] = i+1;
+                i++;
+                j++;
+            }
+            if(j==str.size())
+                break;
+            if(str[i]!=str[j]){
+                if(i>0)
+                    i = lps[i-1];
+                else {
+                    lps[j]=0;
+                    j++;
+                }
+            }
+        }
+        //Find no of chars to be appended
+        int diff = n-lps[2*n];
+
+        //Append these chars to initial string
+        original = s.substr(0,diff) + original;
+        return original;
+    }
+};
+
+//Java
+
+class Solution {
+
+    public String shortestPalindrome(String s) {
+        int n = s.length();
+        String original = s;
+
+        String rev = new StringBuilder(s).reverse().toString();
+        String str = s + "*" + rev;     // pattern
+
+        int[] lps = new int[str.length()];
+        int i = 0, j = 1;
+
+        while (j < str.length()) {
+            if (str.charAt(i) == str.charAt(j)) {
+                lps[j] = i + 1;
+                i++;
+                j++;
+            } else {
+                if (i > 0) {
+                    i = lps[i - 1];
+                } else {
+                    lps[j] = 0;
+                    j++;
+                }
+            }
+        }
+
+        int diff = n - lps[str.length() - 1];
+
+        return rev.substring(0, diff) + original;
+    }
+}
+
+
+#Python
+
+class Solution:
+    def shortestPalindrome(self, s: str) -> str:
+        n = len(s)
+        original = s
+
+        rev = s[::-1]
+        string = s + "*" + rev
+
+        lps = [0] * len(string)
+
+        i, j = 0, 1
+        while j < len(string):
+            if string[i] == string[j]:
+                lps[j] = i + 1
+                i += 1
+                j += 1
+            else:
+                if i > 0:
+                    i = lps[i - 1]
+                else:
+                    lps[j] = 0
+                    j += 1
+
+        diff = n - lps[-1]
+
+        return rev[:diff] + original
